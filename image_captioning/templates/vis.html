@@ -1,0 +1,169 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<head>
+<meta charset="utf-8">
+<title>Vis</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+<link rel="stylesheet" href="{% static "css/milligram.min.css" %}">
+<link rel="stylesheet" href="{% static "css/vis_style.css" %}">s
+</head>
+
+<body id="body">
+<form name="prefixForm" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+    <tr>
+        <td id="neuraltalk2Upload">
+        <input type="file" name="img" id="imgField" accept="image/*">
+        </td>
+        <td>
+        <label for="prefixField">Prefix text:</label>
+        <input type="text" value="They " id="prefixField" name="prefix">
+        </td>
+    </tr>
+    <tr id="modelRow">
+        <td>
+        B (#beams): 
+        <input type="number" value="12" name="B" id="BField">
+        </td>
+        <td>
+        G (#groups): 
+        <input type="number" value="3" name="G" id="GField">
+        </td>
+        <td id="TFieldtd">
+        T (#time steps): 
+        <input type="number" value="35" name="T" id="TField">
+        </td>
+        <td>
+        lambda: 
+        <input type="number" value="0.5" name="lambda" id="lambdaField" step="0.00000001">
+        </td>
+        <td>
+        ngram length: 
+        <input type="number" value="1" name="ngram_length" id="ngramLengthField">
+        </td>
+        <td>
+        div mode:<br>
+        <input type="radio" value="0" name="divmode" checked="checked"> no cumulative diversity<br>
+        <input type="radio" value="1" name="divmode"> cumulative diversity<br>
+        <input type="radio" value="2" name="divmode"> ngram diversity<br>
+        <input type="radio" value="3" name="divmode"> word2vec diversity<br>
+        </td>
+    </tr>
+    <tr>
+        <td rowspan="0">
+        <input class="button-primary" type="submit" value="Send">
+        </td>
+    </tr>
+    </table>
+</form>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script src="{% static "js/vis.js"%}"></script>
+<script type="text/javascript">
+var chart = beam_search_vis()
+            .width(window.innerWidth)
+            .height(window.innerHeight - 200);
+
+$(document).ready(function() {
+    // insert application dependent form
+    var app = getParameterByName("application");
+    if (app == 'char-rnn') {
+        $("#neuraltalk2Upload").remove();
+    } else if (app == 'neuraltalk2') {
+        $("#prefixField")[0].value = "";
+        $("#TFieldtd").remove();
+    } else {
+        app = 'char-rnn';
+        console.log('Please provide a valid application ("char-rnn" or "neuraltalk2"). Defaulting to char-rnn.');
+    }
+
+    // load data and start the vis
+    var data_url = getParameterByName("data");
+    if (data_url) {
+        d3.json(data_url, function(error, data) {
+            if (error) throw error;
+            bsvis(data, app);
+        });
+    } else {
+        var request_data = make_request_data(app);
+        change_vis_data(request_data, app);
+    }
+
+    // update vis data asynchronously
+    $('form[name=prefixForm]').submit(function(e){
+        e.preventDefault();
+        var request_data = make_request_data(app);
+        change_vis_data(request_data, app);
+    });     
+});         
+
+function make_request_data(app) {
+    var request_data = new FormData();
+    var B = parseInt($("#BField")[0].value);
+    var G = parseInt($("#GField")[0].value);
+    if(B % G !== 0) {
+        alert('The number of groups must divide the number of beams (i.e. B % G == 0).');
+        return;
+    }
+    request_data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+    request_data.append("B", $("#BField")[0].value);
+    request_data.append("G", $("#GField")[0].value);
+    request_data.append("lmbda", $("#lambdaField")[0].value);
+    request_data.append("ngram_length", $("#ngramLengthField")[0].value);
+    request_data.append("divmode", $("input:radio[name=divmode]:checked").val());
+    request_data.append("app", app);
+    request_data.append("prefix", $("#prefixField")[0].value);
+    if (app == 'char-rnn') {
+        request_data.append("T", $("#TField")[0].value);
+    } else if (app == 'neuraltalk2') {
+        request_data.append("img_fname", "cat.jpg");
+        img_field = $("#imgField")[0];
+        if (img_field.files.length) {
+            request_data.append("img", img_field.files[0]);
+        }
+    }
+    return request_data;
+}
+
+function change_vis_data(request_data, app) {
+    $.ajax({
+        type: 'POST',
+        cache: false,
+        url: '/vis/beam_search/',
+        data: request_data,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            bsvis(data, app);
+        },
+        error: function(data) {
+            console.log(data);
+        }
+    });
+}
+
+function bsvis(data, app) {
+    var sel = d3.select("body").selectAll("div")
+                .data([deep_copy(data)]);
+    sel.enter().append("div")
+            .attr("class", "top-div");
+    sel.exit().remove();
+    sel.selectAll("*").remove();
+    chart(sel, app);
+    d3.select("#resetButton")
+        .on("click", function() {
+            bsvis(deep_copy(data), app);
+        });
+}
+
+// http://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-clone-an-object
+function deep_copy(obj) {
+    var new_obj = jQuery.extend(true, {}, obj);
+    return new_obj;
+}
+</script>
+</body>
+</html>
