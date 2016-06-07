@@ -1,4 +1,5 @@
 from django.conf import settings
+
 import tempfile
 import os
 import glob
@@ -51,13 +52,14 @@ def neuraltalk2_vis_data(data, request):
 
     if 'img' in request.FILES:
         f = request.FILES.get('img')
-        img_dst = os.path.join(data['gallery_dir'], f.filename)
-        f.save(img_dst)
+        img_dst = os.path.join(data['gallery_dir'], f.name)
+        with open(default_storage.path(img_dst), 'wb+') as destination:
+                for chunk in f.chunks():
+                    destination.write(chunk)
     else:
         assert 'img_fname' in data
         img_src = os.path.join(settings.BASE_DIR, 'media', 'vis', 'neuraltalk2', data['img_fname'])
         img_dst = os.path.join(data['gallery_dir'], data['img_fname'])
-        # shutil.copyfile(img_src, img_dst)
 
     data['gpuid'] = settings.VIS_GPU_ID
 

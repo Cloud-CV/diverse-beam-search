@@ -124,4 +124,4 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'image_captioning', 'static'),
 ]
 
-VIS_GPU_ID = 0
+VIS_GPU_ID = -1
