@@ -1,15 +1,13 @@
 from django.conf import settings
+from django.core.files.storage import default_storage
 
-import tempfile
-import os
 import glob
-import shutil
 import io
-import tempfile
-import subprocess
 import json
-
-img_map = {}
+import os
+import shutil
+import subprocess
+import tempfile
 
 
 def char_rnn_vis_data(data):
@@ -44,8 +42,6 @@ def neuraltalk2_vis_data(data, request):
     data = dict(data)
     temp_dir_name = tempfile.mkdtemp()
     data['vis_dir'] = temp_dir_name
-
-    # set up gallery for neuraltalk2
     data['gallery_dir'] = os.path.join(settings.BASE_DIR, 'media', 'vis', 'neuraltalk2')
     if not os.path.exists(data['gallery_dir']):
         os.makedirs(data['gallery_dir'])
@@ -53,13 +49,17 @@ def neuraltalk2_vis_data(data, request):
     if 'img' in request.FILES:
         f = request.FILES.get('img')
         img_dst = os.path.join(data['gallery_dir'], f.name)
+
         with open(default_storage.path(img_dst), 'wb+') as destination:
                 for chunk in f.chunks():
                     destination.write(chunk)
+        img_path = os.path.join('media', 'vis', 'neuraltalk2', f.name)
+        # stores the image path that needs to be rendered at the client side
+
     else:
         assert 'img_fname' in data
         img_src = os.path.join(settings.BASE_DIR, 'media', 'vis', 'neuraltalk2', data['img_fname'])
-        img_dst = os.path.join(data['gallery_dir'], data['img_fname'])
+        img_path = os.path.join('media', 'vis', 'neuraltalk2', data['img_fname'])
 
     data['gpuid'] = settings.VIS_GPU_ID
 
@@ -67,6 +67,8 @@ def neuraltalk2_vis_data(data, request):
         data['model'] = 'model_id1-501-1448236541.t7'
     else:
         data['model'] = 'model_id1-501-1448236541.t7_cpu.t7'
+
+    print "THE DATA IS ", data
 
     cmd = ('th eval.lua '
             '-model {model} '
@@ -91,9 +93,6 @@ def neuraltalk2_vis_data(data, request):
     with open(os.path.join(temp_dir_name, 'data.json'), 'r') as f:
         vis_data = json.load(f)
 
-    # TODO: better way to do this?... not sanitized (check for /?)... not always unique?
-    unique_name = os.path.split(temp_dir_name)[1] + '_' + data['img_fname']
-    img_map[unique_name] = img_dst
-    vis_data['img_url'] = os.path.join('/imgs/', unique_name)
+    vis_data['img_url'] = img_path
 
     return vis_data

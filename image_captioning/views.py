@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import Http404, HttpResponse
+from django.http import JsonResponse
 
 from utils import char_rnn_vis_data, neuraltalk2_vis_data
-
 import json
 
 
@@ -36,6 +36,6 @@ def beam_search(request, template_name='vis.html'):
             vis_data = neuraltalk2_vis_data(data, request)
 
         # print json.dumps(vis_data)
-        return HttpResponse(json.dumps(vis_data))
+        return JsonResponse(vis_data)
     else:
         return Http404("Please try again")
