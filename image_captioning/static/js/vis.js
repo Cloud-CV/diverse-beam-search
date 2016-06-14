@@ -142,6 +142,7 @@ function dovis(div, app) {
             root.prime_text = data['prime_text'];
         }
     }
+    console.log(data);
     var root_hoffset = get_node_dim(root).width;
     root.y0 = root_hoffset;
     // false node (not returned by tree.nodes(root)), but required

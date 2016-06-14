@@ -2,12 +2,6 @@ circle,path {
   fill: #ccc;
 }
 
-#body {
-  font-size: 15px;
-  overflow-x: hidden;
-  text-align: center;
-}
-
 body div.top-div,form {
   margin: 25px;
 }
