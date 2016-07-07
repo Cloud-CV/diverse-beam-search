@@ -135,14 +135,15 @@
           <h2 id="userImages">Try CloudCV DBS On Your Images</h2>
         </div>
 
-        <form id="fileupload" method="post" action="." enctype="multipart/form-data">
-          <input type="radio" name="imageUplaodMethod" value="url"> Upload Image using URL<br>
+        <form id="fileupload" name="prefixForm" method="post" action="." enctype="multipart/form-data">
+<!--           <input type="radio" name="imageUplaodMethod" value="url"> Upload Image using URL<br>
           <input type="radio" name="imageUplaodMethod" value="dragAndDrop" checked="checked"> Upload Image using drag and drop feature
-        <div id="uploadImageUsingUrl">
+ -->
+ <!--         <div id="uploadImageUsingUrl">
             <div class="row">
                 <label for="image_url"> Image URL<input type="url" name="image_url" id="image_url" placeholder="Enter Image URL" class="form-control col-sm-6"></label>
             </div>
-        </div>
+        </div> -->
 
         <div id="uploadImageUsingDragAndDrop">
             <br>
@@ -191,7 +192,7 @@
           
 
           <label for="G">Groups<input type="number" value="3" class="form-control" name="G" id="GField"></label>
-            <label for="T">Time Steps<input type="number" id="TFieldtd" class="form-control" value="35" name="T" id="TField"></label>
+            <label for="T">Time Steps<input type="number" class="form-control" value="35" name="T" id="TField"></label>
           </div>            
 
           <div class="row">
@@ -204,7 +205,8 @@
           <input type="radio" value="1" name="divmode"> cumulative diversity
           <input type="radio" value="2" name="divmode"> ngram diversity
           <input type="radio" value="3" name="divmode"> word2vec diversity
-          <input class="button-primary" type="submit" value="Send">
+          <br>
+          <input class="btn btn-primary" type="submit" value="Submit">
           </div>
           
 
@@ -252,137 +254,124 @@
             <font size="4">
         <a href="#">Diverse Beam Search</a><br>
             Michael Cogswell, Dhruv Batra, Devi Parikh
-        <br><br>
-       </font><br>
+       </font>
         </div>
     </div>
 </div>
 
 
-<form name="prefixForm" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-</form>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script src="{% static "js/vis.js"%}"></script>
 <script type="text/javascript">
-// var chart = beam_search_vis()
-//             .width(window.innerWidth)
-//             .height(window.innerHeight - 200);
+var chart = beam_search_vis()
+            .width(window.innerWidth)
+            .height(window.innerHeight - 200);
 
-// $(document).ready(function() {
-//     // insert application dependent form
-//     var app = getParameterByName("application");
-//     if (app == 'char-rnn') {
-//         $("#neuraltalk2Upload").remove();
-//     } else if (app == 'neuraltalk2') {
-//         $("#prefixField")[0].value = "";
-//         $("#TFieldtd").remove();
-//     } else {
-//         app = 'char-rnn';
-//         console.log('Please provide a valid application ("char-rnn" or "neuraltalk2"). Defaulting to char-rnn.');
-//     }
+$(document).ready(function() {
+    // insert application dependent form
 
-//     // load data and start the vis
-//     var data_url = getParameterByName("data");
-//     if (data_url) {
-//         d3.json(data_url, function(error, data) {
-//             if (error) throw error;
-//             bsvis(data, app);
-//         });
-//     } else {
-//         var request_data = make_request_data(app);
-//         change_vis_data(request_data, app);
-//     }
+    var app = "neuraltalk2";
+    // load data and start the vis
+    var data_url = getParameterByName("data");
+    if (data_url) {
+        d3.json(data_url, function(error, data) {
+            if (error) throw error;
+            bsvis(data, app);
+        });
+    } else {
+        // var request_data = make_request_data(app);
+        // change_vis_data(request_data, app);
+    }
 
-//     // update vis data asynchronously
-//     $('form[name=prefixForm]').submit(function(e){
-//         e.preventDefault();
-//         var request_data = make_request_data(app);
-//         change_vis_data(request_data, app);
-//     });     
-// });         
+    // update vis data asynchronously
+    $('form[name=prefixForm]').submit(function(e){
+        console.log("Prefix form submission working properly.");
+        e.preventDefault();
+        var request_data = make_request_data(app);
+        change_vis_data(request_data, app);
+    });     
+});         
 
-// function make_request_data(app) {
-//     var request_data = new FormData();
-//     var B = parseInt($("#BField")[0].value);
-//     var G = parseInt($("#GField")[0].value);
-//     if(B % G !== 0) {
-//         alert('The number of groups must divide the number of beams (i.e. B % G == 0).');
-//         return;
-//     }
-//     request_data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
-//     request_data.append("B", $("#BField")[0].value);
-//     request_data.append("G", $("#GField")[0].value);
-//     request_data.append("lmbda", $("#lambdaField")[0].value);
-//     request_data.append("ngram_length", $("#ngramLengthField")[0].value);
-//     request_data.append("divmode", $("input:radio[name=divmode]:checked").val());
-//     request_data.append("app", app);
-//     request_data.append("prefix", $("#prefixField")[0].value);
-//     if (app == 'char-rnn') {
-//         request_data.append("T", $("#TField")[0].value);
-//     } else if (app == 'neuraltalk2') {
-//         request_data.append("img_fname", "cat.jpg");
-//         img_field = $("#imgField")[0];
-//         if (img_field.files.length) {
-//             request_data.append("img", img_field.files[0]);
-//         }
-//     }
-//     return request_data;
-// }
+function make_request_data(app) {
+    var request_data = new FormData();
+    var B = parseInt($("#BField")[0].value);
+    var G = parseInt($("#GField")[0].value);
+    if(B % G !== 0) {
+        alert('The number of groups must divide the number of beams (i.e. B % G == 0).');
+        return;
+    }
+    request_data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
+    request_data.append("B", $("#BField")[0].value);
+    request_data.append("G", $("#GField")[0].value);
+    request_data.append("lmbda", $("#lambdaField")[0].value);
+    request_data.append("ngram_length", $("#ngramLengthField")[0].value);
+    request_data.append("divmode", $("input:radio[name=divmode]:checked").val());
+    request_data.append("app", app);
+    request_data.append("prefix", $("#prefixField")[0].value);
+    if (app == 'char-rnn') {
+        request_data.append("T", $("#TField")[0].value);
+    } else if (app == 'neuraltalk2') {
+        request_data.append("img_fname", "cat.jpg");
+        img_field = $("#imgField")[0];
+        if (img_field.files.length) {
+            request_data.append("img", img_field.files[0]);
+        }
+    }
+    return request_data;
+}
 
-// function change_vis_data(request_data, app) {
-//     $.ajax({
-//         type: 'POST',
-//         cache: false,
-//         url: '/vis/beam_search/',
-//         data: request_data,
-//         processData: false,
-//         contentType: false,
-//         success: function(data) {
-//             bsvis(data, app);
-//         },
-//         error: function(data) {
-//             console.log(data);
-//         }
-//     });
-// }
+function change_vis_data(request_data, app) {
+    $.ajax({
+        type: 'POST',
+        cache: false,
+        url: '/vis/beam_search/',
+        data: request_data,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            bsvis(data, app);
+        },
+        error: function(data) {
+            console.log(data);
+        }
+    });
+}
 
-// function bsvis(data, app) {
-//     console.log("##################");
-//     console.log(data);
-//     var sel = d3.select("body").selectAll("div")
-//                 .data([deep_copy(data)]);
-//     sel.enter().append("div")
-//             .attr("class", "top-div");
-//     sel.exit().remove();
-//     sel.selectAll("*").remove();
-//     chart(sel, app);
-//     d3.select("#resetButton")
-//         .on("click", function() {
-//             bsvis(deep_copy(data), app);
-//         });
-// }
+function bsvis(data, app) {
+    var sel = d3.select("#ResultImage").selectAll("div")
+                .data([deep_copy(data)]);
+    sel.enter().append("div")
+            .attr("class", "top-div");
+    sel.exit().remove();
+    sel.selectAll("*").remove();
+    chart(sel, app);
+    d3.select("#resetButton")
+        .on("click", function() {
+            bsvis(deep_copy(data), app);
+        });
+}
 
-// // http://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-clone-an-object
-// function deep_copy(obj) {
-//     var new_obj = jQuery.extend(true, {}, obj);
-//     return new_obj;
-// }
+// http://stackoverflow.com/questions/122102/what-is-the-most-efficient-way-to-clone-an-object
+function deep_copy(obj) {
+    var new_obj = jQuery.extend(true, {}, obj);
+    return new_obj;
+}
 </script>
 
 <script type="text/javascript">
-  $('input:radio[name="imageUplaodMethod"]').change(
-    function(){
-        if ($(this).is(':checked') && $(this).val() == 'url') {
-          $("#uploadImageUsingDragAndDrop").hide();
-          $("#uploadImageUsingUrl").show();
-        }
-        else if ($(this).is(':checked') && $(this).val() == 'dragAndDrop') {
-          $("#uploadImageUsingUrl").hide();
-          $("#uploadImageUsingDragAndDrop").show();
-        }
-    });
+  //  Comment out this script portion once we need to give fucntionality of sending images using the input field.
+  // $('input:radio[name="imageUplaodMethod"]').change(
+  //   function(){
+  //       if ($(this).is(':checked') && $(this).val() == 'url') {
+  //         $("#uploadImageUsingDragAndDrop").hide();
+  //         $("#uploadImageUsingUrl").show();
+  //       }
+  //       else if ($(this).is(':checked') && $(this).val() == 'dragAndDrop') {
+  //         $("#uploadImageUsingUrl").hide();
+  //         $("#uploadImageUsingDragAndDrop").show();
+  //       }
+  //   });
 </script>
 </body>
 </html>

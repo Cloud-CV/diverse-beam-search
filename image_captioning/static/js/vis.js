@@ -42,17 +42,17 @@ var margin = {top: 40, right: 40, bottom: 40, left: 40},
  */
 var horz_space = parseInt(getParameterByName("horz_space")),
     duration = parseInt(getParameterByName("trans_time")),
-    time_bar_duration = 100,
+    time_bar_duration = 10,
     interact_mode = getParameterByName("mode"),
     font_size = parseInt(getParameterByName("font_size")),
     special_chars = parseInt(getParameterByName("special_chars")),
     max_beam_age = parseInt(getParameterByName("max_beam_age"));
 
 if (!horz_space) {
-    horz_space = 15;
+    horz_space = 30;
 }
 if (!duration) {
-    duration = 1000;
+    duration = 10;
 }
 if (interact_mode != 'interactive') {
     interact_mode = 'auto';
@@ -161,7 +161,7 @@ function dovis(div, app) {
     tree = d3.layout.tree()
         .size([height, width]);
     tree_g.append("foreignObject")
-        .html('<button class="button button-outline" id="resetButton">reset</a>');
+        .html('<button class="button button-outline hidden" id="resetButton">reset</a>');
 
     // time bar
     var time_bar_svg = vis_div.append("svg")
