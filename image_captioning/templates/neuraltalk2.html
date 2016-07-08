@@ -86,9 +86,9 @@
 
 <div class="container">
     <div class="page-header">
-            <h1 align="center">CloudCV: Diverse Beam Search</h1>
-            <h3 align="center">More details about beam search can be found <a href="#">here.</a></h3>
-            <h3 align="center">Lorem ipsum dolor sit amet, consectetur adipiscing elit <a href="#">here</a></h3>
+            <h1 align="center">CloudCV: Neuraltalk2</h1>
+            <h3 align="center">More details about Neuraltalk2 be found <a href="#">here.</a></h3>
+            <h3 align="center">State-of-the-art Neuraltalk2 code available <a href="#">here</a></h3>
             <br>
             <font size="4">
                 <p style="text-align:center;">
@@ -100,7 +100,7 @@
 
 <div class="container">
     <div class="page-header">
-        <h2>Try CloudCV DBS: Sample Images</h2>
+        <h2>Try CloudCV DBS: Neuraltalk2</h2>
         <br>
         <div class="row">
             <div class="col-md-8 col-xs-12">
@@ -112,17 +112,17 @@
          <div class="row" id="demoImages1">
             <img src="/static/images/img1.jpg"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
-            <img src="/static/images/img1.jpg"
+            <img src="/static/images/img2.jpg"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
-            <img src="/static/images/img1.jpg"
+            <img src="/static/images/img3.jpg"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
          </div>
          <div class="row" id="demoImages2">
-            <img src="/static/images/img1.jpg"
+            <img src="/static/images/img4.jpg"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
-            <img src="/static/images/img1.jpg"
+            <img src="/static/images/img5.jpg"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
-            <img src="/static/images/img1.jpg"
+            <img src="/static/images/img6.jpg"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
              <br>
          </div>
@@ -151,12 +151,12 @@
                 <div class="span7">
                 <span class="btn btn-primary fileinput-button">
                     <i class="icon-plus icon-white"></i>
-                    <span>Add files...</span>
-                    <input type="file" name="file" id="imgField" multiple>
+                    <span>Add file...</span>
+                    <input type="file" name="file" id="imgField">
                 </span>
                     <button type="button" class="btn btn-danger delete" id="deleteButton" style="display:none;">
                         <i class="icon-trash icon-white"></i>
-                        <span>Delete All Files</span>
+                        <span>Delete File</span>
                     </button>
                     <button type="reset" class="btn btn-warning cancel" id="cancelButton" style="display:none;">
                         <i class="icon-ban-circle icon-white"></i>
@@ -172,7 +172,7 @@
                 </div>
             </div>
             <div id="dropArea" style="height:100px;border-style:dashed;">
-                <h3 style="text-align: center;padding-bottom: 15px; padding-top: 15px"> You can also drag and drop images here </h3>
+                <h3 style="text-align: center;padding-bottom: 15px; padding-top: 15px"> You can also drag and drop image here </h3>
             </div>
 
             <div class="fileupload-loading"></div>
@@ -182,8 +182,10 @@
         </div>
 
           <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}'/>
-          <input type="hidden" name="socketid-hidden" value="test" id="socketid" value="$csrf_token"/>
-          <div class="form-inline">
+          <input type="hidden" name="socketid-hidden" id="socketid" value="$csrf_token"/>
+          <input type="hidden" name="demoMethod" value="" id="demoMethod"/>
+          <input type="hidden" name="demoImagePath" id="demoImagePath" value=""/>
+          <div class="form-inline" id="mainForm">
             
           <div class="row">
           <label for="prefixField">Prefix text<input type="text" value="They " class="form-control" id="prefixField" name="prefix"></label>
@@ -244,7 +246,7 @@
             </font><br><br>
         </div>
 
-        <h3>Results of Diverse beam search </h3><br>
+        <h3 id="showResult">Results of Diverse beam search </h3><br>
 
         <div id="ResultImage" class="row" style="padding-bottom:100px;">
         </div>
@@ -252,7 +254,7 @@
         <div id="creditSection">
        <h3> Credits </h3>
             <font size="4">
-        <a href="#">Diverse Beam Search</a><br>
+        <a href="#">Neuraltalk2</a><br>
             Michael Cogswell, Dhruv Batra, Devi Parikh
        </font>
         </div>
@@ -261,6 +263,35 @@
 
 
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
+<script src="http://cloudcv.org/static/js/vendor/jquery.ui.widget.js"></script>
+<!-- The Templates plugin is included to render the upload/download listings -->
+<script src="http://cloudcv.org/static/js/tmpl.min.js"></script>
+<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
+<script src="http://cloudcv.org/static/js/load-image.min.js"></script>
+<!-- The Canvas to Blob plugin is included for image resizing functionality -->
+<script src="http://cloudcv.org/static/js/canvas-to-blob.min.js"></script>
+<!-- Bootstrap JS is not required, but included for the responsive demo navigation -->
+<script src="http://cloudcv.org/static/js/bootstrap.min.js"></script>
+<!-- blueimp Gallery script -->
+<script src="http://cloudcv.org/static/js/jquery.blueimp-gallery.min.js"></script>
+<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+<script src="http://cloudcv.org/static/js/jquery.iframe-transport.js"></script>
+<!-- The basic File Upload plugin -->
+<script src="http://cloudcv.org/static/js/jquery.fileupload.js"></script>
+<!-- The File Upload processing plugin -->
+<script src="http://cloudcv.org/static/js/jquery.fileupload-process.js"></script>
+<!-- The File Upload image preview & resize plugin -->
+<script src="http://cloudcv.org/static/js/jquery.fileupload-image.js"></script>
+<!-- The File Upload audio preview plugin -->
+<script src="http://cloudcv.org/static/js/jquery.fileupload-audio.js"></script>
+<!-- The File Upload video preview plugin -->
+<script src="http://cloudcv.org/static/js/jquery.fileupload-video.js"></script>
+<!-- The File Upload validation plugin -->
+<script src="http://cloudcv.org/static/js/jquery.fileupload-validate.js"></script>
+<!-- The File Upload user interface plugin -->
+<script src="http://cloudcv.org/static/js/jquery.fileupload-ui.js"></script>
+<!-- The main application script -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script src="{% static "js/vis.js"%}"></script>
 <script type="text/javascript">
@@ -272,23 +303,12 @@ $(document).ready(function() {
     // insert application dependent form
 
     var app = "neuraltalk2";
-    // load data and start the vis
-    var data_url = getParameterByName("data");
-    if (data_url) {
-        d3.json(data_url, function(error, data) {
-            if (error) throw error;
-            bsvis(data, app);
-        });
-    } else {
-        // var request_data = make_request_data(app);
-        // change_vis_data(request_data, app);
-    }
-
     // update vis data asynchronously
     $('form[name=prefixForm]').submit(function(e){
         console.log("Prefix form submission working properly.");
         e.preventDefault();
         var request_data = make_request_data(app);
+        scrollToElement($("#termstart"));
         change_vis_data(request_data, app);
     });     
 });         
@@ -308,16 +328,19 @@ function make_request_data(app) {
     request_data.append("ngram_length", $("#ngramLengthField")[0].value);
     request_data.append("divmode", $("input:radio[name=divmode]:checked").val());
     request_data.append("app", app);
+    request_data.append("demo_method", $('#demoMethod')[0].value);
     request_data.append("prefix", $("#prefixField")[0].value);
-    if (app == 'char-rnn') {
-        request_data.append("T", $("#TField")[0].value);
-    } else if (app == 'neuraltalk2') {
-        request_data.append("img_fname", "cat.jpg");
+
+    // condition to check the demo method(either using demo images or uploading own images) 
+    if ($('#demoMethod')[0].value == "usingOwnImage"){
         img_field = $("#imgField")[0];
-        if (img_field.files.length) {
-            request_data.append("img", img_field.files[0]);
-        }
+        request_data.append("img", img_field.files[0]);
+        console.log(img_field.files[0]);
     }
+    else if ($('#demoMethod')[0].value == "usingDemoImage"){
+        request_data.append("demo_image_path", $('#demoImagePath')[0].value);
+    }
+
     return request_data;
 }
 
@@ -330,6 +353,7 @@ function change_vis_data(request_data, app) {
         processData: false,
         contentType: false,
         success: function(data) {
+            scrollToElement($("#showResult"));
             bsvis(data, app);
         },
         error: function(data) {
@@ -361,21 +385,39 @@ function deep_copy(obj) {
 
 <script type="text/javascript">
 
-function scrollToElement(dstElement)
-{
-    try
-    {
-        var scrollPixels = dstElement.offset().top - $(".navbar-fixed-top").height()-30;
-        $('html, body').animate({
-        scrollTop: scrollPixels
-        }, 2000);
+    function scrollToElement(dstElement) {
+        try
+        {
+            var scrollPixels = dstElement.offset().top - $(".navbar-fixed-top").height()-30;
+            $('html, body').animate({
+            scrollTop: scrollPixels
+            }, 2000);
+        }
+        catch(err)
+        {
+            console.log(err);
+        }
     }
-    catch(err)
-    {
-        console.log(err);
-    }
-}
 
+
+    function submitDemoImage(src){
+        //Change the image to loading jpeg
+        var img_url = document.createElement('a');
+        img_url.href = src;
+        $('#demoImagePath')[0].value = img_url.pathname;
+        $('#demoMethod')[0].value = "usingDemoImage";
+        $('#comments').prepend('<br>');
+        $('#comments').prepend('<li>' + "Submitted demo image" + '</li>');
+        scrollToElement($("#mainForm"));
+    }
+
+    function submitOwnImage(){
+        $("#imgField").change(function(){
+            $('#demoMethod')[0].value = "usingOwnImage";
+            $('#comments').prepend('<br>');
+            $('#comments').prepend('<li>' + "Submitted demo image" + '</li>');
+        });
+    }
   //  Comment out this script portion once we need to give fucntionality of sending images using the input field.
   // $('input:radio[name="imageUplaodMethod"]').change(
   //   function(){
@@ -389,5 +431,7 @@ function scrollToElement(dstElement)
   //       }
   //   });
 </script>
+
 </body>
 </html>
+

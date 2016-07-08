@@ -39,6 +39,7 @@ def char_rnn_vis_data(data):
 
 def neuraltalk2_vis_data(data, request):
     print "######  NeuralTalk working #######"
+    # NOTE: The demo images should reside in the static/images/vis/neuraltalk2
     data = dict(data)
     temp_dir_name = tempfile.mkdtemp()
     data['vis_dir'] = temp_dir_name
@@ -46,20 +47,22 @@ def neuraltalk2_vis_data(data, request):
     if not os.path.exists(data['gallery_dir']):
         os.makedirs(data['gallery_dir'])
 
-    if 'img' in request.FILES:
-        f = request.FILES.get('img')
-        img_dst = os.path.join(data['gallery_dir'], f.name)
+    # handle the case when user uploads his own image
+    if request.POST.get('demo_method') == "usingOwnImage":
+        if 'img' in request.FILES:
+            f = request.FILES.get('img')
+            img_dst = os.path.join(data['gallery_dir'], f.name)
 
-        with open(default_storage.path(img_dst), 'wb+') as destination:
-                for chunk in f.chunks():
-                    destination.write(chunk)
-        img_path = os.path.join('media', 'vis', 'neuraltalk2', f.name)
-        # stores the image path that needs to be rendered at the client side
+            with open(default_storage.path(img_dst), 'wb+') as destination:
+                    for chunk in f.chunks():
+                        destination.write(chunk)
+            img_path = os.path.join('media', 'vis', 'neuraltalk2', f.name)
+            # stores the image path that needs to be rendered at the client side
 
-    else:
-        assert 'img_fname' in data
-        img_src = os.path.join(settings.BASE_DIR, 'media', 'vis', 'neuraltalk2', data['img_fname'])
-        img_path = os.path.join('media', 'vis', 'neuraltalk2', data['img_fname'])
+    # handling the case when a demo image is submitted
+    elif request.POST.get('demo_method') == "usingDemoImage":
+        print request.POST.get('demo_image_path')
+        img_path = request.POST.get("demo_image_path")
 
     data['gpuid'] = settings.VIS_GPU_ID
 
@@ -68,7 +71,7 @@ def neuraltalk2_vis_data(data, request):
     else:
         data['model'] = 'model_id1-501-1448236541.t7_cpu.t7'
 
-    print "THE DATA IS ", data
+    # print "THE DATA IS ", data
 
     cmd = ('th eval.lua '
             '-model {model} '

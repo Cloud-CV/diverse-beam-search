@@ -41,7 +41,6 @@ def beam_search(request, template_name='vis.html'):
         if application == "char-rnn":
             vis_data = char_rnn_vis_data(data)
         elif application == "neuraltalk2":
-            data['img_fname'] = request.POST.get('img_fname', None)
             vis_data = neuraltalk2_vis_data(data, request)
 
         return JsonResponse(vis_data)

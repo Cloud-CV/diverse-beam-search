@@ -88,7 +88,7 @@
     <div class="page-header">
             <h1 align="center">CloudCV: Char-rnn</h1>
             <h3 align="center">More details about char-rnn can be found <a href="#">here.</a></h3>
-            <h3 align="center">Lorem ipsum dolor sit amet, consectetur adipiscing elit <a href="#">here</a></h3>
+            <h3 align="center">State-of-the-art char-rnn code available <a href="#">here</a></h3>
             <br>
             <font size="4">
                 <p style="text-align:center;">
@@ -163,9 +163,9 @@
             </font><br><br>
         </div>
 
-        <h3>Results of Diverse beam search </h3><br>
+        <h3 id="showResult">Results of Char-rnn</h3><br>
 
-        <div id="ResultImage" class="row" style="padding-bottom:100px;">
+        <div id="ResultImage" class="row" style="padding-bottom:50px;">
         </div>
 
         <div id="creditSection">
@@ -205,9 +205,9 @@ $(document).ready(function() {
 
     // update vis data asynchronously
     $('form[name=prefixForm]').submit(function(e){
-        console.log("Prefix form submission working properly.");
         e.preventDefault();
         var request_data = make_request_data(app);
+        scrollToElement($("#termstart"));
         change_vis_data(request_data, app);
     });     
 });         
@@ -250,6 +250,7 @@ function change_vis_data(request_data, app) {
         contentType: false,
         success: function(data) {
             bsvis(data, app);
+            scrollToElement($("#showResult"));
         },
         error: function(data) {
             console.log(data);
@@ -276,6 +277,22 @@ function deep_copy(obj) {
     var new_obj = jQuery.extend(true, {}, obj);
     return new_obj;
 }
+
+
+function scrollToElement(dstElement) {
+    try
+    {
+        var scrollPixels = dstElement.offset().top - $(".navbar-fixed-top").height()-30;
+        $('html, body').animate({
+        scrollTop: scrollPixels
+        }, 2000);
+    }
+    catch(err)
+    {
+        console.log(err);
+    }
+}
+
 </script>
 
 <script type="text/javascript">
