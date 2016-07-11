@@ -93,8 +93,8 @@ function dovis(div, app) {
         num_finished_per_group = {},
         vis_div = div.append("div")
                     .attr("class", "vismain"),
-        beam_div = div.append("div")
-                    .attr("class", "beams"),
+        // beam_div = div.append("div")
+        //             .attr("class", "beams"),
         invisible_div = div.append("div")
                     .attr("id", "test");
 
@@ -169,7 +169,7 @@ function dovis(div, app) {
     time_bar = time_bar_svg.append("g")
             .attr("transform", "translate(" + time_bar_left_margin + "," + 0 + ")");
 
-    show_beams(data.final_beams, data.final_logprobs, data.final_divscores, beam_div, num_beams_per_group);
+    // show_beams(data.final_beams, data.final_logprobs, data.final_divscores, beam_div, num_beams_per_group);
 
     // initialize the time bar
     time_bar_svg.append("text")
@@ -564,34 +564,34 @@ function get_node_dim(node) {
 }
 
 /* Show the final beams from torch. */
-function show_beams(beams, logprobs, divscores, beam_div, num_beams_per_group) {
-    // beam ix -> group ix (1 based, like divm in torch code)
-    var group_ixs = [],
-        beam_ix = 0;
-    num_beams_per_group.forEach(function(num_in_group, group_ix) {
-        for(var i = 0; i < num_in_group; i++) {
-            group_ixs[beam_ix] = group_ix+1;
-            beam_ix += 1;
-        }
-    });
-    beam_div.selectAll("p")
-        .data(beams)
-      .enter()
-        .append("p")
-        .text(function(d, di) {
-            var result = d;
-            if (logprobs) {
-                result = result + "  (log probability: " + logprobs[di].toFixed(3) + ")";
-            }
-            if (divscores) {
-                result = result + "  (diversity augmented score: " + divscores[di].toFixed(3) + ")";
-            }
-            return result;
-        })
-        .style("color", function(d, di) {
-            return d3.lab(group_colors(group_ixs[di])).toString();
-        });
-}
+// function show_beams(beams, logprobs, divscores, beam_div, num_beams_per_group) {
+//     // beam ix -> group ix (1 based, like divm in torch code)
+//     var group_ixs = [],
+//         beam_ix = 0;
+//     num_beams_per_group.forEach(function(num_in_group, group_ix) {
+//         for(var i = 0; i < num_in_group; i++) {
+//             group_ixs[beam_ix] = group_ix+1;
+//             beam_ix += 1;
+//         }
+//     });
+//     beam_div.selectAll("p")
+//         .data(beams)
+//       .enter()
+//         .append("p")
+//         .text(function(d, di) {
+//             var result = d;
+//             if (logprobs) {
+//                 result = result + "  (log probability: " + logprobs[di].toFixed(3) + ")";
+//             }
+//             if (divscores) {
+//                 result = result + "  (diversity augmented score: " + divscores[di].toFixed(3) + ")";
+//             }
+//             return result;
+//         })
+//         .style("color", function(d, di) {
+//             return d3.lab(group_colors(group_ixs[di])).toString();
+//         });
+// }
 }
 
 // getters and setters

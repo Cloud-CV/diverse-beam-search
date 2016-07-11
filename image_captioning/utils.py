@@ -51,6 +51,7 @@ def neuraltalk2_vis_data(data, request):
 
     # handle the case when user uploads his own image
     if request.POST.get('demo_method') == "usingOwnImage":
+        print "USING MY OWN IMAGE"
         if 'img' in request.FILES:
             f = request.FILES.get('img')
             img_dst = os.path.join(data['gallery_dir'], f.name)

@@ -22,8 +22,12 @@ def neuraltalk2(request, template_name="neuraltalk2.html"):
         Home view for neuraltalk2
     """
     demo_images_path = constants.DBS_DEMO_IMAGES_PATH
-    demo_images = [random.choice(next(os.walk(demo_images_path))[2]) for i in range(6)]
-    demo_images = [os.path.join(constants.DBS_DEMO_IMAGES_PATH, x) for x in demo_images]
+    if os.path.exists(demo_images_path):
+        demo_images = [random.choice(next(os.walk(demo_images_path))[2]) for i in range(6)]
+        demo_images = [os.path.join(constants.DBS_DEMO_IMAGES_PATH, x) for x in demo_images]
+    else:
+        images = ['img1.jpg', 'img2.jpg', 'img3.jpg', 'img4.jpg', 'img5.jpg', 'img6.jpg', ]
+        demo_images = [os.path.join(settings.STATIC_URL, 'images', x) for x in images]
     return render(request, template_name,{'demo_images': demo_images})
 
 
@@ -39,13 +43,14 @@ def beam_search(request, template_name='vis.html'):
             'G': request.POST.get('G', 3),
             'T': request.POST.get('T', 0),
             'lmbda': request.POST.get('lmbda', 0.5),
-            'ngram_length': request.POST.get('ngram_length', 0.5),
+            'ngram_length': request.POST.get('ngram_length', '1'),
             'divmode': request.POST.get('divmode', 0),
             'prime': request.POST.get('prefix', ''),
         }
         if application == "char-rnn":
             vis_data = char_rnn_vis_data(data)
         elif application == "neuraltalk2":
+            print data
             vis_data = neuraltalk2_vis_data(data, request)
 
         return JsonResponse(vis_data)

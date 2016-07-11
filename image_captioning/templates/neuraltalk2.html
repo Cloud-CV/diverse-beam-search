@@ -181,37 +181,37 @@
 
           <input type='hidden' name='csrfmiddlewaretoken' value='{{ csrf_token }}'/>
           <input type="hidden" name="socketid-hidden" id="socketid" value="$csrf_token"/>
-          <input type="hidden" name="demoMethod" value="" id="demoMethod"/>
+          <input type="hidden" name="demoMethod" value="usingOwnImage" id="demoMethod"/>
           <input type="hidden" name="demoImagePath" id="demoImagePath" value=""/>
           <div class="form-inline" id="mainForm">
             
           <div class="row">
-              <div class="alert alert-info" role="alert" style="display:none;">
+         <!--      <div class="alert alert-info" role="alert" style="display:none;">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <strong>Plesae enter the Prefix text(required)!</strong>
-            </div>
-          <label for="prefixField">Prefix text<input type="text" value="" class="form-control" id="prefixField" name="prefix" required></label>
+                Please enter the Prefix text <strong> (required)!</strong>
+            </div> -->
+          <!-- <label for="prefixField">Prefix text<input type="text" value="" class="form-control" id="prefixField" name="prefix" required></label> -->
           
           <label for="B">Beams<input type="number" value="12" class="form-control" name="B" id="BField"></label>
 
-          <label for="G">Groups<input type="number" value="3" class="form-control" name="G" id="GField"></label>
+          <label for="G">Diverse groups<input type="number" value="3" class="form-control" name="G" id="GField"></label>
             <!-- <label for="T">Time Steps<input type="number" class="form-control" value="35" name="T" id="TField"></label> -->
-            <label for="lambda">Lambda<input type="number" value="0.5" name="lambda" class="form-control" id="lambdaField" step="0.00000001"></label>
-            <label for="ngram_length">Ngram Length<input type="number" value="1" name="ngram_length" class="form-control" id="ngramLengthField"></label><br>
+            <label for="lambda">Diversity strength<input type="number" value="0.5" name="lambda" class="form-control" id="lambdaField" step="0.00000001"></label>
+            <!-- <label for="ngram_length">Ngram Length<input type="number" value="1" name="ngram_length" class="form-control" id="ngramLengthField"></label><br> -->
+            <input class="btn btn-primary" type="submit" value="Submit">
           </div>
 
-          <div class="row">
+          <!-- <div class="row">
           <label for="divmode">Div Mode</label>
           <input type="radio" value="0" name="divmode" checked="checked"> no cumulative diversity
           <input type="radio" value="1" name="divmode"> cumulative diversity
           <input type="radio" value="2" name="divmode"> ngram diversity
           <input type="radio" value="3" name="divmode"> word2vec diversity
           <br>
-          <input class="btn btn-primary" type="submit" value="Submit">
           </div>
-          
+           -->
 
           </div>
         </form>
@@ -219,7 +219,6 @@
             <table class="files"></table>
             <div class="fileupload-progressbar"></div>
         </div>
-        <br>
     </div>
 </div>
 
@@ -241,7 +240,7 @@
                 <ol>
                     <li>You upload an image.</li>
                     <li>Your request is sent to our servers with GPUs courtesy NVIDIA.</li>
-                    <li>Our servers run our deep-learning based <a class="button_link" onclick="scrollToElement($('#creditSection'))">Diverse Beam Search algorithm.</a></li>
+                    <li>Our servers run our  <a class="button_link" onclick="scrollToElement($('#creditSection'))">Diverse Beam Search algorithm.</a></li>
                     <li>Results and updates are shown in real-time.</li>    
                 </ol>
             </font><br><br>
@@ -255,6 +254,8 @@
         <div id="creditSection">
        <h3> Credits </h3>
             <font size="4">
+        <p><a href=""> Arxiv Paper</a> - Diverse Beam Search</p>
+        <p><a href="https://github.com/karpathy/neuraltalk2" target="_blank">Karpathy's Neuraltalk2 Repository</a></p>
         <a href="#">Neuraltalk2</a><br>
             Michael Cogswell, Dhruv Batra, Devi Parikh
        </font>
@@ -307,6 +308,7 @@ $(document).ready(function() {
     // update vis data asynchronously
     $('form[name=prefixForm]').submit(function(e){
         console.log("Prefix form submission working properly.");
+        console.log($("#demoMethod")[0].value);
         e.preventDefault();
         var request_data = make_request_data(app);
         scrollToElement($("#termstart"));
@@ -325,12 +327,12 @@ function make_request_data(app) {
     request_data.append("csrfmiddlewaretoken", '{{ csrf_token }}');
     request_data.append("B", $("#BField")[0].value);
     request_data.append("G", $("#GField")[0].value);
-    request_data.append("lmbda", $("#lambdaField")[0].value);
-    request_data.append("ngram_length", $("#ngramLengthField")[0].value);
-    request_data.append("divmode", $("input:radio[name=divmode]:checked").val());
     request_data.append("app", app);
     request_data.append("demo_method", $('#demoMethod')[0].value);
-    request_data.append("prefix", $("#prefixField")[0].value);
+    // request_data.append("lmbda", $("#lambdaField")[0].value);
+    // request_data.append("ngram_length", $("#ngramLengthField")[0].value);
+    // request_data.append("divmode", $("input:radio[name=divmode]:checked").val());
+    // request_data.append("prefix", $("#prefixField")[0].value);
 
     // condition to check the demo method(either using demo images or uploading own images) 
     if ($('#demoMethod')[0].value == "usingOwnImage"){
@@ -409,9 +411,8 @@ function deep_copy(obj) {
         $('#demoMethod')[0].value = "usingDemoImage";
         $('#comments').prepend('<br>');
         $('#comments').prepend('<li>' + "Submitted demo image" + '</li>');
-        scrollToElement($("#mainForm"));
-        $('.alert').show();
-        $('#prefixField').focus();
+        scrollToElement($("#termstart"));
+        $('form[name=prefixForm]').submit();
     }
 
     function submitOwnImage(){
