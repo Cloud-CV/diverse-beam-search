@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.core.files.storage import default_storage
 
+import image_captioning.constants as constants
+
 import glob
 import io
 import json
@@ -64,7 +66,7 @@ def neuraltalk2_vis_data(data, request):
         print request.POST.get('demo_image_path')
         img_path = request.POST.get("demo_image_path")
 
-    data['gpuid'] = settings.VIS_GPU_ID
+    data['gpuid'] = constants.VIS_GPU_ID
 
     if data['gpuid'] >= 0:
         data['model'] = 'model_id1-501-1448236541.t7'

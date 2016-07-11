@@ -86,10 +86,8 @@
 
 <div class="container">
     <div class="page-header">
-            <h1 align="center">CloudCV: Neuraltalk2</h1>
-            <h3 align="center">More details about Neuraltalk2 be found <a href="#">here.</a></h3>
-            <h3 align="center">State-of-the-art Neuraltalk2 code available <a href="#">here</a></h3>
-            <br>
+            <h1 align="center">Diverse Beam Search: Image Captioning</h1>
+            <h3 align="center">More details about Diverse Beam Search can be found <a href="#">here.</a></h3>
             <font size="4">
                 <p style="text-align:center;">
                     <span style="font-size: 14px;">Browsers currently supported: Google Chrome, Mozilla Firefox</span>
@@ -110,19 +108,19 @@
         </div>
 
          <div class="row" id="demoImages1">
-            <img src="/static/images/img1.jpg"
+            <img src="{{ demo_images.0 }}"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
-            <img src="/static/images/img2.jpg"
+            <img src="{{ demo_images.1 }}"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
-            <img src="/static/images/img3.jpg"
+            <img src="{{ demo_images.2 }}"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
          </div>
          <div class="row" id="demoImages2">
-            <img src="/static/images/img4.jpg"
+            <img src="{{ demo_images.3 }}"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
-            <img src="/static/images/img5.jpg"
+            <img src="{{ demo_images.4 }}"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
-            <img src="/static/images/img6.jpg"
+            <img src="{{ demo_images.5 }}"
                   onclick="submitDemoImage(this.src)" class="demo_img col-md-4"></img>
              <br>
          </div>
@@ -188,20 +186,23 @@
           <div class="form-inline" id="mainForm">
             
           <div class="row">
-          <label for="prefixField">Prefix text<input type="text" value="They " class="form-control" id="prefixField" name="prefix"></label>
+              <div class="alert alert-info" role="alert" style="display:none;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <strong>Plesae enter the Prefix text(required)!</strong>
+            </div>
+          <label for="prefixField">Prefix text<input type="text" value="" class="form-control" id="prefixField" name="prefix" required></label>
           
-          <label for="B">Beams<input type="number" value="12" class="form-control" name="B" id="BField"></label> 
-          
+          <label for="B">Beams<input type="number" value="12" class="form-control" name="B" id="BField"></label>
 
           <label for="G">Groups<input type="number" value="3" class="form-control" name="G" id="GField"></label>
-            <label for="T">Time Steps<input type="number" class="form-control" value="35" name="T" id="TField"></label>
-          </div>            
+            <!-- <label for="T">Time Steps<input type="number" class="form-control" value="35" name="T" id="TField"></label> -->
+            <label for="lambda">Lambda<input type="number" value="0.5" name="lambda" class="form-control" id="lambdaField" step="0.00000001"></label>
+            <label for="ngram_length">Ngram Length<input type="number" value="1" name="ngram_length" class="form-control" id="ngramLengthField"></label><br>
+          </div>
 
           <div class="row">
-            <label for="lambda">Lambda<input type="number" value="0.5" name="lambda" class="form-control" id="lambdaField" step="0.00000001"></label>
-
-            <label for="ngram_length">Ngram Length<input type="number" value="1" name="ngram_length" class="form-control" id="ngramLengthField"></label><br>
-
           <label for="divmode">Div Mode</label>
           <input type="radio" value="0" name="divmode" checked="checked"> no cumulative diversity
           <input type="radio" value="1" name="divmode"> cumulative diversity
@@ -409,6 +410,8 @@ function deep_copy(obj) {
         $('#comments').prepend('<br>');
         $('#comments').prepend('<li>' + "Submitted demo image" + '</li>');
         scrollToElement($("#mainForm"));
+        $('.alert').show();
+        $('#prefixField').focus();
     }
 
     function submitOwnImage(){

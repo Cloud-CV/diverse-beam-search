@@ -65,7 +65,7 @@ if (font_size) {
         .style('font-size', font_size + 'px');
 }
 if (!max_beam_age) {
-    max_beam_age = 0;
+    max_beam_age = 10;
 }
 
 /*

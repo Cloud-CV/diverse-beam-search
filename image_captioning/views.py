@@ -1,12 +1,14 @@
 from django.shortcuts import render
+from django.conf import settings
 from django.http import Http404, HttpResponse
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
 
 from utils import char_rnn_vis_data, neuraltalk2_vis_data
 
-import json
-
+import image_captioning.constants as constants
+import random
+import os
 
 def char_rnn(request, template_name="char-rnn.html"):
     """
@@ -19,7 +21,10 @@ def neuraltalk2(request, template_name="neuraltalk2.html"):
     """
         Home view for neuraltalk2
     """
-    return render(request, template_name,)
+    demo_images_path = constants.DBS_DEMO_IMAGES_PATH
+    demo_images = [random.choice(next(os.walk(demo_images_path))[2]) for i in range(6)]
+    demo_images = [os.path.join(constants.DBS_DEMO_IMAGES_PATH, x) for x in demo_images]
+    return render(request, template_name,{'demo_images': demo_images})
 
 
 def beam_search(request, template_name='vis.html'):
