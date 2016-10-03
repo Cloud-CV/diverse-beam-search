@@ -29,11 +29,10 @@ DBS_CONFIG = {
     'backend': "cudnn", 
     'id': "evalscript", 
     'seed': 123, 
-    'gpuid': -1, 
-    'div_vis_dir': "",
+    'div_vis_dir': str(os.path.join(settings.MEDIA_ROOT, 'div_vis_dir')),
 }
 
-DBS_GPUID = -1
+DBS_GPUID = 0
 
 if DBS_GPUID == -1:
     DBS_CONFIG['model'] = 'models/model_id1-501-1448236541.t7_cpu.t7'

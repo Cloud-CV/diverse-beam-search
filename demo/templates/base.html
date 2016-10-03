@@ -1,3 +1,4 @@
+{% load static %}
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -9,7 +10,8 @@
     <link rel="stylesheet" href="http://cloudcv.org/static/css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-
+    <link rel="stylesheet" type="text/css" href="{% static 'css/vis_style.css' %}">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/milligram.min.css' %}"> -->
     <script src="/static/js/dropzone.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="http://cloudcv.org/static/js/vendor/jquery.ui.widget.js"></script>

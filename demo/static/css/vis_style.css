@@ -1,0 +1,86 @@
+circle,path {
+  fill: #ccc;
+}
+
+#body {
+  font-size: 15px;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+
+div.vismain {
+  overflow-x: scroll;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+
+.time_node circle {
+  fill: #fff;
+  stroke-width: 1.5px;
+}
+
+.axis_title {
+  font-size: 25px;
+}
+
+.time_link {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+/*div.top-div {
+  position: relative;
+}
+
+div.top-div div {
+  position: absolute;
+  top: 0;
+  left: 0;
+}*/
+
+div.vismain svg.tree_container {
+  border: 2px solid #ccc;
+  border-bottom: 0px;
+  background: #f4f4f4;
+}
+
+/*svg.tree_container{
+  padding-top: 10%;
+  padding-bottom: 30%;
+}
+*/
+div.vismain svg.time_bar_container {
+  border: 2px solid #ccc;
+  border-top: 0px;
+  background: #dddddd;
+  margin-top: -7px;
+  margin-bottom: 25px;
+}
+
+div.beams {
+  text-align: left;
+}
+
+form table {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+form table td {
+  border-bottom: 0px;
+}
+
+/* http://stackoverflow.com/questions/118241/calculate-text-width-with-javascript */
+#test {
+  position: absolute;
+  visibility: hidden;
+  height: auto;
+  width: auto;
+  white-space: nowrap;
+}

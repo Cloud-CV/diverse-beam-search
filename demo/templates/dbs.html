@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block header_content %}
 
@@ -73,7 +74,6 @@ mix-blend-mode: multiply;
 
   <form id="my-dropzone" method="post" class="dropzone
   " action="{% url "upload" %}" enctype="multipart/form-data">
-  <input type="hidden" id="demoType" name="demo_type" value=""> 
   <input type="hidden" id="appType" name="type" value="dbs">
 
   {% csrf_token %}
@@ -86,6 +86,7 @@ mix-blend-mode: multiply;
 {% block result %}
 <script type="text/javascript">
   // Overriden 
+  var app = "neuraltalk2";
   Dropzone.options.myDropzone = {
     autoProcessQueue: true,
     uploadMultiple: false,
@@ -140,16 +141,10 @@ $(document).ready(function(){
 
     if("result" in response){
 
-      result = JSON.parse(response['result']);
-      var d = new Date();
-      $("#inputCaption").text(result['input_caption']);
-      $("#predictedCaption").text(result['pred_caption']);
-      $("#overImg1").attr("src", result['input_image']);
-      $("#img1").attr("src",result['captioning_gcam_raw']+"?"+d.getTime());
-      $("#img2").attr("src",result['captioning_gb']+"?"+d.getTime());
-      $("#img3").attr("src",result['captioning_gb_gcam']+"?"+d.getTime());
-      $("#show-grad-cam-result").show();
-      scrollToElement($("#show-grad-cam-result"));
+      result = response['result'];
+      $("#resultHeading").show();
+      scrollToElement($("#ResultImage"));
+      bsvis(result, "neuraltalk2");
       $('#comments').prepend('<br>');
     }
   }
@@ -164,25 +159,28 @@ $(document).ready(function(){
 function submitDemoImage(src){
   var img_path = getLocation(src).pathname;
   $("#inputImageAfterUpload").attr('src', img_path);
-  $("#show-grad-cam-result").hide();
-  $("#Caption").val("");
+  $("#prefix").val("");
   $("#ResultDiv").show();
+  $("#demoType").val("demoImage");
+  $("#image_folder").val(img_path);
   scrollToElement($("#termstart"));
   $('#comments').prepend('<br>');
   $('#comments').prepend('<li>' + "Submitted demo image" + '</li>');
-  scrollToElement($("#ResultDiv"));
+  scrollToElement($("#resultHeading"));
 }
 
 function submitImageForCaptioning () {
   var prefix = $("#prefix").val();
   var l = $("#inputImageAfterUpload")[0].src;
   var image_folder = $("#image_folder").val();
+  console.log("IMAGE FOLDER IS " + image_folder);
+  var demoType = $("#demoType").val();
   console.log(prefix);
   console.log(image_folder);
   $.ajax({
     type    : 'POST', // define the type of HTTP verb we want to use (POST for our form)
     url     : '{% url 'captioning' %}', // the url where we want to POST
-    data    : { 'image_folder': image_folder, 'csrfmiddlewaretoken': "{{ csrf_token }}", 'prefix': prefix, 'socketid': "{{ socketid }}"} // our data object
+    data    : { 'demoType': demoType,'image_folder': image_folder, 'csrfmiddlewaretoken': "{{ csrf_token }}", 'prefix': prefix, 'socketid': "{{ socketid }}"} // our data object
   })// using the done promise callback
   .done(function(response) {
     console.log("Ajax call completed successfully");
@@ -200,9 +198,12 @@ function submitImageForCaptioning () {
   <div class="col-md-7" style="padding-bottom: 30px;">
     <input id="prefix" class="form-control" name="prefix" placeholder="Enter prefix text...(Optional)"><br>
     <input id="image_folder" name="image_folder" type="hidden">
+    <input id="demoType" name="demoType" type="hidden">
     <input type="button" value="Submit" onclick="submitImageForCaptioning()" class="btn btn-primary">
 </div>
 </div>
+<div id="ResultImage" class="container" style="padding-bottom:50px;"></div>
+
 {% endblock %}
 
 {% block credits %}
@@ -216,5 +217,34 @@ function submitImageForCaptioning () {
 </div>
 </body>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+<script src="{% static 'js/vis.js'%}"></script>
+
+<script type="text/javascript">
+
+var chart = beam_search_vis()
+            .width(window.innerWidth)
+            .height(window.innerHeight - 200);
+
+function bsvis(data, app) {
+    var sel = d3.select("#ResultImage").selectAll("div")
+                .data([deep_copy(data)]);
+    sel.enter().append("div")
+            .attr("class", "top-div");
+    sel.exit().remove();
+    sel.selectAll("*").remove();
+    chart(sel, app);
+    d3.select("#resetButton")
+        .on("click", function() {
+            bsvis(deep_copy(data), app);
+        });
+}
+
+function deep_copy(obj) {
+    var new_obj = jQuery.extend(true, {}, obj);
+    return new_obj;
+}
+
+</script>
 </html>
 {% endblock %}

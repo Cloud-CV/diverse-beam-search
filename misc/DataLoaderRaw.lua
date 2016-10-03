@@ -9,8 +9,8 @@ require 'lfs'
 require 'image'
 
 local DataLoaderRaw = torch.class('DataLoaderRaw')
-
 function DataLoaderRaw:__init(opt)
+  local path = require 'pl.path'
   local coco_json = utils.getopt(opt, 'coco_json', '')
 
   -- load the json file which contains additional information about the dataset
@@ -31,7 +31,7 @@ function DataLoaderRaw:__init(opt)
     -- read in all the filenames from the folder
     print('listing all images in directory ' .. opt.folder_path)
     local function isImage(f)
-      local supportedExt = {'.jpg','.JPEG','.JPG','.png','.PNG','.ppm','.PPM'}
+      local supportedExt = {'.jpg', '.jpeg', '.JPEG','.JPG','.png','.PNG','.ppm','.PPM'}
       for _,ext in pairs(supportedExt) do
         local _, end_idx =  f:find(ext)
         if end_idx and end_idx == f:len() then

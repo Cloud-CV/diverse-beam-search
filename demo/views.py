@@ -12,6 +12,7 @@ import os
 import random
 import traceback
 import urllib2
+import shutil
 
 
 def home(request, template_name="index.html"):
@@ -26,9 +27,22 @@ def captioning(request, template_name="dbs.html"):
             image_folder = urllib2.unquote(image_folder)
             prefix = request.POST.get('prefix', '')
             socketid = request.POST.get('socketid')
+            demoType = request.POST.get("demoType")
+
+            if demoType == "demoImage":
+                image_path = os.path.join(settings.BASE_DIR, str(image_folder)[1:])
+                random_uuid = uuid.uuid1()
+                # place the demo image in a new folder as a new job
+                output_dir = os.path.join(settings.MEDIA_ROOT, 'images', str(random_uuid))
+
+                if not os.path.exists(output_dir):
+                    os.makedirs(output_dir)
+
+                print image_path, output_dir
+                shutil.copy(image_path, output_dir)
+                image_folder = output_dir
 
             log_to_terminal(socketid, {"terminal": "Starting Diverse Beam Search Job..."})
-            print request.POST
             response = dbs_captioning(prefix, image_folder, socketid)
         except Exception, err:
             log_to_terminal(socketid, {"terminal": traceback.print_exc()})

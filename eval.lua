@@ -57,11 +57,7 @@ function TorchModel:__init(model, batch_size, language_eval, dump_images, dump_j
   self.seed = seed
   self.gpuid = gpuid
   self.div_vis_dir = div_vis_dir
-
-  self:loadModel()
-
-  torch.manualSeed(self.seed)
-  torch.setdefaulttensortype('torch.FloatTensor')
+  print("GPUID is", gpuid)
 
   if self.gpuid >= 0 then
     require 'cutorch'
@@ -71,7 +67,14 @@ function TorchModel:__init(model, batch_size, language_eval, dump_images, dump_j
     cutorch.setDevice(self.gpuid + 1) -- note +1 because lua is 1-indexed
   end
 
+  self:loadModel()
+
+  torch.manualSeed(self.seed)
+  torch.setdefaulttensortype('torch.FloatTensor')
+
+
   local export_div_vis = (self.div_vis_dir ~= '')
+  self.export_div_vis = export_div_vis
 end
 
 
@@ -120,11 +123,10 @@ function TorchModel:loadModel()
   self.protos = protos
   self.checkpoint = checkpoint
   self.vocab = vocab
+  self.inv_vocab = inv_vocab
+  self.vocab_int= vocab_int
 end
 
--------------------------------------------------------------------------------
--- Evaluation fun(ction)
--------------------------------------------------------------------------------
 function TorchModel:predict(image_folder, prefix)
 
   local loader = DataLoaderRaw{folder_path = image_folder, coco_json = self.coco_json}
@@ -132,7 +134,7 @@ function TorchModel:predict(image_folder, prefix)
 
   self.primetext = prefix
   self.image_folder = image_folder
-
+  self.loader = loader
   self.protos.cnn:evaluate()
   self.protos.lm:evaluate()
   self.loader:resetIterator(self.split) -- rewind iteator back to first datapoint in the split
@@ -140,6 +142,7 @@ function TorchModel:predict(image_folder, prefix)
   local loss_sum = 0
   local loss_evals = 0
   local final_beams = {}
+  local result
   while true do
 
     -- fetch a batch of data
@@ -170,7 +173,7 @@ function TorchModel:predict(image_folder, prefix)
     if self.divmode == 3 then
       w2vutils = require 'dbs.word2vec.w2vutils'
       idx2vec = function(seq_idx)
-          word = vocab_int[seq_idx]
+          word = self.vocab_int[seq_idx]
           vec = w2vutils:word2vec(word, false)
           return vec
       end
@@ -194,7 +197,7 @@ function TorchModel:predict(image_folder, prefix)
         ngram_length = self.ngram_length,
         idx2vec = idx2vec,
     }
-    if export_div_vis then
+    if self.export_div_vis then
         vis_table = {}
         vis_table['iterations'] = {}
         sample_opts.vis_iterations = vis_table['iterations']
@@ -231,7 +234,7 @@ function TorchModel:predict(image_folder, prefix)
       end
       
       for word in preproc_prime(self.primetext):gmatch'%w+' do
-          ix = inv_vocab[word]
+          ix = self.inv_vocab[word]
           if ix == nil then
               -- UNK
               ix = self.protos.lm.vocab_size
@@ -259,10 +262,11 @@ function TorchModel:predict(image_folder, prefix)
     final_beams[n]['image_id'] = temp_name[#temp_name]
     final_beams[n]['caption'] = beam_utils.beam_search(init, sample_opts)
 
-    if export_div_vis then
+    if self.export_div_vis then
+      print("This part of code executed successfully")
         assert(self.batch_size == 1)
         img_path = data.infos[1].file_path
-        vis_utils.export_vis(final_beams[n]['caption'], vis_table, img_path, self.vocab, T, self.div_vis_dir, sample_opts.end_token, sample_opts.primetext)
+        vis_utils.export_vis(final_beams[n]['caption'], vis_table, img_path, self.vocab, T, self.image_folder, sample_opts.end_token, sample_opts.primetext)
     end
 
     print('done with image: ' .. n)
@@ -287,7 +291,7 @@ function TorchModel:predict(image_folder, prefix)
     json_table[im_n]['captions'] = {}
     for i = 1,self.M do
       for j = 1,bdash do
-        current_beam_string = table.concat(net_utils.decode_sequence(vocab, torch.reshape(beam_table[im_n]['caption'][i][j].seq, beam_table[im_n]['caption'][i][j].seq:size(1), 1)))
+        current_beam_string = table.concat(net_utils.decode_sequence(self.vocab, torch.reshape(beam_table[im_n]['caption'][i][j].seq, beam_table[im_n]['caption'][i][j].seq:size(1), 1)))
         print('beam ' .. (i-1)*bdash+j ..' diverse group: '..i)
         print(string.format('%s',current_beam_string))
         print('----------------------------------------------------')
@@ -299,12 +303,7 @@ function TorchModel:predict(image_folder, prefix)
 
     table.sort(json_table[im_n]['captions'],compare_beam)
   end
-  if self.dump_json == 1 then
-    -- dump the json
-    utils.write_json('captions/vis_'..self.B..'_'..self.M..'_lambda'..self.lambda..'_divmode'..self.divmode..'_temp'..self.temperature..'_ngram'..self.ngram_length..'_'..self.dump_json_postfix..'.json', json_table)
-  end
-  return json_table
+  local vis_result = io.open(self.image_folder.."/data.json", "r")
+  -- print(vis_result:read())
+  return vis_result:read()
 end
-
--- local beam_table  = eval_split(self.split, {num_images = self.num_images})
--- print_and_dump_beam(opt,beam_table)

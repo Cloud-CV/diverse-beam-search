@@ -14,7 +14,7 @@ def dbs_captioning(prefix, image_folder, socketid):
 
     channel.queue_declare(queue='dbs_task_queue', durable=True)
     message = {
-        'image_folder': image_folder,
+        'image_folder': image_folder + "/",
         'prefix': prefix,
         'socketid': socketid,
     }

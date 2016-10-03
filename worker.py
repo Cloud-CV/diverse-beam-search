@@ -15,6 +15,8 @@ import json
 import traceback
 import os
 
+print constants.DBS_CONFIG
+print constants.DBS_GPUID
 # Loading the VQA Model forever
 DBSModel = PyTorchHelpers.load_lua_class(constants.DBS_LUA_PATH, 'DBSTorchModel')
 DBSTorchModel = DBSModel(
@@ -42,7 +44,7 @@ DBSTorchModel = DBSModel(
     constants.DBS_CONFIG['backend'], 
     constants.DBS_CONFIG['id'], 
     constants.DBS_CONFIG['seed'], 
-    constants.DBS_CONFIG['gpuid'],
+    constants.DBS_GPUID,
     constants.DBS_CONFIG['div_vis_dir'],
 )
 
@@ -59,10 +61,11 @@ def callback(ch, method, properties, body):
     try:
         print(" [x] Received %r" % body)
         body = yaml.safe_load(body) # using yaml instead of json.loads since that unicodes the string in value
-
         result = DBSTorchModel.predict(body['image_folder'], body['prefix'])
-        log_to_terminal(body['socketid'], {"terminal": json.dumps(result)})
-        log_to_terminal(body['socketid'], {"result": json.dumps(result)})
+        result = json.loads(result)
+        result['img_url'] = result['img_path'].replace(settings.BASE_DIR, "")
+        log_to_terminal(body['socketid'], {"terminal": result})
+        log_to_terminal(body['socketid'], {"result": result})
         log_to_terminal(body['socketid'], {"terminal": "Completed the Diverse Beam Search task"})
 
         ch.basic_ack(delivery_tag = method.delivery_tag)
