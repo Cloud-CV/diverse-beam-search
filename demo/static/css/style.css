@@ -1,0 +1,55 @@
+.brand-logo{
+	font-weight: 300;
+}
+
+.demo_img{
+	height: 300px !important;
+	padding: 6px;
+}
+
+#inputImage{
+	max-width: 100% !important;
+}
+
+#result{
+	font-family: Roboto !important;
+}
+
+  .hiddenDiv{
+      display: none;
+  }
+  .button_link {
+  cursor: pointer;
+  }
+  .demo_img{
+  height: 300px !important;
+      padding: 6px;
+
+  }
+  .demo_img:hover {
+  border: 6px solid black;
+      padding: 0px;
+  cursor: pointer;
+  }
+  #show-demo-images-btn{
+      text-align: right;
+  }
+  @media(max-width: 540px){
+      #show-demo-images-btn{
+        text-align: center;
+
+      }
+  }
+
+.dz-upload { 
+    display: block; 
+    background-color: red; 
+    height: 10px;
+    width: 0%;
+}
+
+p, h1,h2,h3,h4, font, body{
+  font-weight: 300 !important;
+  font-family: 'Roboto', sans-serif !important;
+}
+

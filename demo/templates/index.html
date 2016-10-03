@@ -1,0 +1,177 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Grad-CAM: Gradient-weighted Class Activation Mapping</title>
+    <meta name="description" content="Grad-CAM: Gradient-weighted Class Activation Mapping">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,‌​100italic,300,300ita‌​lic,400italic,500,50‌​0italic,700,700itali‌​c,900italic,900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://cloudcv.org/static/css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+
+    <script src="/static/js/dropzone.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://cloudcv.org/static/js/vendor/jquery.ui.widget.js"></script>
+    <script src="http://cloudcv.org/node/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/min/dropzone.min.css">
+</head>
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-fixed-top .navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://cloudcv.org">CloudCV</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li id="image-stitching"><a  href="http://cloudcv.org/image-stitch">Image Stitching</a></li>
+                 <li id = "object-detection" ><a href="http://objdetect.cloudcv.org">Object Detection</a></li>
+                <li id = "decaf-server"><a  href="http://cloudcv.org/decaf-server">Decaf-Server</a></li>
+                <li id = "classification" ><a href="http://cloudcv.org/classify">Classification</a></li>
+                <li id = "poi" ><a href="http://cloudcv.org/vip">VIP</a></li>
+                <li id="trainaclass"><a href="http://cloudcv.org/trainaclass">Train a new category</a></li>
+                <li id="vqa"><a href="http://cloudcv.org/vqa">VQA</a></li>
+                <li id="vqa"><a href="{% url 'home' %}">Grad-CAM</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<style>
+p, h1, h2, h3, a{
+  font-weight: 300 !important;
+  font-family: 'Roboto', sans-serif;
+}
+
+body{
+  font-family: 'Roboto', sans-serif;
+}
+
+p{
+  font-size: 16px;
+}
+.team{
+  width: 75%;
+  margin-bottom: 15px;
+ }
+ .member-name{
+  cursor: auto;
+  margin-top: 5px;
+ }
+
+ .img-responsive{
+  max-height: 100%;
+  display: block;
+  height: 150px; 
+ }
+ .team_div{
+  margin-top: 15px;
+ }
+
+ #network{
+  margin-top: 15px;
+ }
+
+ .headings{
+  margin-bottom: 15px;
+ }
+#team_heading{
+  margin-bottom: 25px;
+}
+</style>
+
+{% block header_content %}
+
+  <div class="container">
+    <h1 align="center">DBS: Diverse Beam Search</h1>
+  </div>
+
+{% endblock %}
+
+{% block slider %}
+
+{% endblock %}
+
+{% block abstract%}
+<div class="container">
+    <h2 align="center" class="headings">Abstract</h2>
+    <p>In recent research conducted by our lab (Machine Learning & Perception group), we have developed novel techniques for making CNN more 'transparent' by producing <b>visual explanations</b> i.e visualizations showing what evidence in the image supports a prediction. Research conducted in our lab has shown that models that explain their behavior are considered more trustworthy than typical "black-box" models.</p>
+
+    <img id="network" src="{% static 'images/network.png' %}" width="100%" align="center">
+</div>
+{% endblock %}
+
+{% block demo_links %}
+
+<div class="container" align="center">
+  <h2 align="center" class="headings">Demonstration Links</h2>
+    <div class="row">
+      <div class="col-md-12">
+      <div class="card text-center">
+        <h3 class="card-title" align="center">Diverse Beam Search</h3>
+        <a target="_blank" href="{% url 'captioning' %}" class="btn btn-primary" >Try Diverse Beam Search</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block team %}
+  <div class="container team_div" align="center">
+    <h2 align="center" class="headings" id="team_heading">DBS Team</h2>
+    <div class="row team text-center">
+      <div class="col-sm-3" align="center">
+        <img src="{% static 'images/team/ram.jpeg'%}" class="img-responsive img-circle" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="https://ramprs.github.io/">Ramprasaath R. Selvaraju</a></div>
+      </div>
+      <div class="col-sm-3" align="center">
+        <img src="{% static 'images/team/abhishek.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="http://abhishekdas.com/">Abhishek Das</a></div>
+      </div>
+      <div class="col-sm-3" align="center">
+        <img src="{% static 'images/team/rama.jpeg'%}" class="img-responsive img-circle" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="http://vrama91.github.io/">Ramakrishna Vedantam</a></div>
+      </div>
+      <div class="col-sm-3" align="center">
+        <img src="{% static 'images/team/michael.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="">Michael Cogswell</a></div>
+      </div>
+    </div>
+
+    <div class="row team">
+      <div class="col-sm-3" align="center"> 
+        <img src="{% static 'images/team/deshraj.png'%}" class="img-responsive img-circle center" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="https://www.linkedin.com/in/deshraj-yadav-34325975">Deshraj Yadav</a></div>
+      </div>
+      <div class="col-sm-3" align="center">
+        <img src="{% static 'images/team/stefan.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="https://computing.ece.vt.edu/~steflee/">Stefan Lee</a></div>
+      </div>
+      <div class="col-sm-3" align="center">
+        <img src="{% static 'images/team/DeviParikh.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="https://filebox.ece.vt.edu/~parikh/">Devi Parikh</a></div>
+      </div>
+      <div class="col-sm-3" align="center">
+        <img src="{% static 'images/team/dhruv_batra.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="https://filebox.ece.vt.edu/~dbatra/">Dhruv Batra</a></div>
+      </div>
+    </div>
+
+  </div>
+{% endblock%}
+
+{% block footer %}
+
+{% endblock %}
+</body>
+</html>
