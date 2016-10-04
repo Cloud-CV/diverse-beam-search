@@ -28,9 +28,9 @@ DBSTorchModel = DBSModel(
     constants.DBS_CONFIG['dump_json'], 
     constants.DBS_CONFIG['dump_json_postfix'], 
     constants.DBS_CONFIG['dump_path'],
-    constants.DBS_CONFIG['B'],
-    constants.DBS_CONFIG['M'],
-    constants.DBS_CONFIG['lambda'], 
+    # constants.DBS_CONFIG['B'],
+    # constants.DBS_CONFIG['M'],
+    # constants.DBS_CONFIG['lambda'], 
     constants.DBS_CONFIG['divmode'], 
     constants.DBS_CONFIG['temperature'], 
     # constants.DBS_CONFIG['primetext'],
@@ -61,7 +61,7 @@ def callback(ch, method, properties, body):
     try:
         print(" [x] Received %r" % body)
         body = yaml.safe_load(body) # using yaml instead of json.loads since that unicodes the string in value
-        result = DBSTorchModel.predict(body['image_folder'], body['prefix'])
+        result = DBSTorchModel.predict(body['image_folder'], body['prefix'], body['B'], body['M'], body['lambda'])
         result = json.loads(result)
         result['img_url'] = result['img_path'].replace(settings.BASE_DIR, "")
         log_to_terminal(body['socketid'], {"terminal": result})

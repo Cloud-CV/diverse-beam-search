@@ -18,7 +18,7 @@ local debug = require 'debug'
 
 local TorchModel = torch.class('DBSTorchModel')
 
-function TorchModel:__init(model, batch_size, language_eval, dump_images, dump_json, dump_json_postfix, dump_path, B, M, lambda, divmode, temperature, ngram_length, image_root, input_h5, input_json, split, coco_json, backend, id, seed, gpuid, div_vis_dir)
+function TorchModel:__init(model, batch_size, language_eval, dump_images, dump_json, dump_json_postfix, dump_path, divmode, temperature, ngram_length, image_root, input_h5, input_json, split, coco_json, backend, id, seed, gpuid, div_vis_dir)
 
   -- Input option
   self.model = model
@@ -33,9 +33,9 @@ function TorchModel:__init(model, batch_size, language_eval, dump_images, dump_j
   self.dump_path = dump_path
 
   -- Sampling Option
-  self.B = B
-  self.M = M
-  self.lambda = lambda
+  -- self.B = B
+  -- self.M = M
+  -- self.lambda = lambda
   self.divmode = divmode
   self.temperature = temperature
   -- self.primetext = primetext
@@ -127,7 +127,7 @@ function TorchModel:loadModel()
   self.vocab_int= vocab_int
 end
 
-function TorchModel:predict(image_folder, prefix)
+function TorchModel:predict(image_folder, prefix, B, M, lambda)
 
   local loader = DataLoaderRaw{folder_path = image_folder, coco_json = self.coco_json}
   local num_images = self.num_images
@@ -182,9 +182,9 @@ function TorchModel:predict(image_folder, prefix)
     -- forward the model to also get generated samples for each image
     local sample_opts = {
         T = self.protos.lm.seq_length,
-        B = self.B,
-        M = self.M,
-        lambda = self.lambda,
+        B = B,
+        M = M, 
+        lambda = lambda,
         temperature = self.temperature,
         -- size of a state
         state_size = self.protos.lm.num_layers * 2,
@@ -283,13 +283,13 @@ function TorchModel:predict(image_folder, prefix)
   local function compare_beam(a,b) return a.logp > b.logp end
 
   json_table = {}
-  bdash = self.B / self.M
+  bdash = B/M
 
   for im_n = 1,#beam_table do
     json_table[im_n] = {}
     json_table[im_n]['image_id'] = beam_table[im_n]['image_id']
     json_table[im_n]['captions'] = {}
-    for i = 1,self.M do
+    for i = 1,M do
       for j = 1,bdash do
         current_beam_string = table.concat(net_utils.decode_sequence(self.vocab, torch.reshape(beam_table[im_n]['caption'][i][j].seq, beam_table[im_n]['caption'][i][j].seq:size(1), 1)))
         print('beam ' .. (i-1)*bdash+j ..' diverse group: '..i)
