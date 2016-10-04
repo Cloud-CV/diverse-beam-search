@@ -3,15 +3,15 @@
 
 {% block header_content %}
 
-<a href="https://github.com/Cloud-CV/Grad-CAM" target="_blank"><img style="position: fixed; top: 0; right: 0; border: 0; z-index:2000;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<a href="//github.com/Cloud-CV/diverse-beam-search" target="_blank"><img style="position: fixed; top: 0; right: 0; border: 0; z-index:2000;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 
 <div class="container">
     <div class="page-header">
-        <h1 align="center">DBS: Diverse Beam Search</h1>
-        <br><h4>Grad-CAM highlights regions of the image the captioning model looks at while making predictions.</h4>
-        <font size="4">
+        <h1 align="center">Diverse Beam Search</h1>
+        <br><h4>Diverse Beam Search, our proposed method to decode significantly different sequences from neural sequence models is used to generate captions from images.</h4>
+        <font size="3">
             <p>
-                Torch code for Grad-CAM is available <a href="//github.com/ramprs/grad-cam">here</a>. Browsers currently supported by the demo: Google Chrome, Mozilla Firefox.
+               The code for setting up this demo is available <a href="#">here</a>. Browsers currently supported by the demo: Google Chrome, Mozilla Firefox.
             </p>
         </font>
     </div>
@@ -65,11 +65,18 @@ mix-blend-mode: multiply;
   margin-bottom: 15px !important;
 }
 
+#input_note{
+  font-size: 12px;
+}
+
+#canvas{
+  display: hidden;
+}
 </style>
 
 <div class="container">
   <div class="page-header">
-    <h2 id="userImages">Try DBS On Your Images</h2>
+    <h2 id="userImages">Try Beam Search On Your Images</h2>
   </div>
 
   <form id="my-dropzone" method="post" class="dropzone
@@ -101,6 +108,7 @@ mix-blend-mode: multiply;
         $("#inputImageAfterUpload").attr('src', data['file_path']);
         $("#image_folder").val(data['image_folder']);
         $("#ResultDiv").show();
+        $("#ResultImage").hide();
         $("#demoType").val("uploadedImageType");
         $("#prefix").val("");
         $('#comments').prepend('<br>');
@@ -143,6 +151,7 @@ $(document).ready(function(){
 
       result = response['result'];
       $("#resultHeading").show();
+      $("#ResultImage").show();
       scrollToElement($("#ResultImage"));
       bsvis(result, "neuraltalk2");
       $('#comments').prepend('<br>');
@@ -160,6 +169,7 @@ function submitDemoImage(src){
   var img_path = getLocation(src).pathname;
   $("#inputImageAfterUpload").attr('src', img_path);
   $("#prefix").val("");
+  $("#ResultImage").hide();
   $("#ResultDiv").show();
   $("#demoType").val("demoImage");
   $("#image_folder").val(img_path);
@@ -171,6 +181,19 @@ function submitDemoImage(src){
 
 function submitImageForCaptioning () {
   var prefix = $("#prefix").val();
+  var B = $("#B").val();
+  var M = $("#M").val();
+  var lamda = $("#lamda").val();
+  if (B == ""){
+    B = 6;
+  }
+  if (!M){
+    M = 3;
+  }
+  if (lamda == ""){
+    lamda = 0.5;
+  }
+
   var l = $("#inputImageAfterUpload")[0].src;
   var image_folder = $("#image_folder").val();
   console.log("IMAGE FOLDER IS " + image_folder);
@@ -180,7 +203,7 @@ function submitImageForCaptioning () {
   $.ajax({
     type    : 'POST', // define the type of HTTP verb we want to use (POST for our form)
     url     : '{% url 'captioning' %}', // the url where we want to POST
-    data    : { 'demoType': demoType,'image_folder': image_folder, 'csrfmiddlewaretoken': "{{ csrf_token }}", 'prefix': prefix, 'socketid': "{{ socketid }}"} // our data object
+    data    : { 'demoType': demoType,'image_folder': image_folder, 'csrfmiddlewaretoken': "{{ csrf_token }}", 'B': B, 'M': M, 'lamda': lamda, 'socketid': "{{ socketid }}"} // our data object
   })// using the done promise callback
   .done(function(response) {
     console.log("Ajax call completed successfully");
@@ -195,14 +218,33 @@ function submitImageForCaptioning () {
   <div class="col-md-5" style="padding-bottom: 30px; clear: both;">
     <img class="img-responsive" src="" style="height: 300px;" id="inputImageAfterUpload">
   </div>
-  <div class="col-md-7" style="padding-bottom: 30px;">
-    <input id="prefix" class="form-control" name="prefix" placeholder="Enter prefix text...(Optional)"><br>
+<!--   <div class="col-md-7" style="padding-bottom: 30px;">
+    </div>
+ -->      
+      <div class="col-md-2">
+        <label for="rg-from">B:</label>
+        <input id="B" type="number" class="form-control" name="B" placeholder="Enter B...(optional)"><br>
+      </div>
+      <div class="col-md-2">
+        <label for="rg-from">G:</label>
+        <select class="form-control" id="M" name="M" placeholder="Enter G...(optional)">
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label for="rg-from">&#955;:</label>
+        <input id="lamda" type="number" class="form-control" name="lamda" placeholder="Enter &#955;...(optional)" ><br>
+      </div>
+    <!-- <input id="prefix" class="form-control" name="prefix" placeholder="Enter prefix text...(Optional)"><br> -->
     <input id="image_folder" name="image_folder" type="hidden">
     <input id="demoType" name="demoType" type="hidden">
-    <input type="button" value="Submit" onclick="submitImageForCaptioning()" class="btn btn-primary">
+    <div class="col-md-7">
+      <p id="input_note">Note: More diverse lists can be obtained by increasing the number of groups (G) and the diversity strength &#955;.</p>
+      <input type="button" value="Submit" onclick="submitImageForCaptioning()" class="btn btn-primary">
+    </div>
 </div>
 </div>
-<div id="ResultImage" class="container" style="padding-bottom:50px;"></div>
+<div id="ResultImage" class="container" style="padding-bottom:50px;">
+</div>
 
 {% endblock %}
 
@@ -245,6 +287,22 @@ function deep_copy(obj) {
     return new_obj;
 }
 
+</script>
+
+<script type="text/javascript">
+  $("#B").change(function(){
+    var B = $("#B").val();
+    var factors = [];
+    $('#M').empty();
+    for (i = 1; i <= B; i++) {
+        if (B % i == 0) {
+          $('#M').append($('<option>', {
+              value: i,
+              text: i,
+          }));            
+        }
+    }
+  });
 </script>
 </html>
 {% endblock %}

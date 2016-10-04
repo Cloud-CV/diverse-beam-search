@@ -28,6 +28,9 @@ def captioning(request, template_name="dbs.html"):
             prefix = request.POST.get('prefix', '')
             socketid = request.POST.get('socketid')
             demoType = request.POST.get("demoType")
+            B = request.POST.get("B", 6)
+            M = request.POST.get("M", 3)
+            lamda = request.POST.get("lamda", 0.5)
 
             if demoType == "demoImage":
                 image_path = os.path.join(settings.BASE_DIR, str(image_folder)[1:])
@@ -43,7 +46,7 @@ def captioning(request, template_name="dbs.html"):
                 image_folder = output_dir
 
             log_to_terminal(socketid, {"terminal": "Starting Diverse Beam Search Job..."})
-            response = dbs_captioning(prefix, image_folder, socketid)
+            response = dbs_captioning(prefix, image_folder, B, M, lamda, socketid)
         except Exception, err:
             log_to_terminal(socketid, {"terminal": traceback.print_exc()})
 

@@ -7,7 +7,7 @@ import sys
 import json
 
 
-def dbs_captioning(prefix, image_folder, socketid):
+def dbs_captioning(prefix, image_folder, B, M, lamda, socketid):
     connection = pika.BlockingConnection(pika.ConnectionParameters(
             host='localhost'))
     channel = connection.channel()
@@ -16,6 +16,9 @@ def dbs_captioning(prefix, image_folder, socketid):
     message = {
         'image_folder': image_folder + "/",
         'prefix': prefix,
+        'B': B,
+        'M': M,
+        'lambda': lamda,
         'socketid': socketid,
     }
 

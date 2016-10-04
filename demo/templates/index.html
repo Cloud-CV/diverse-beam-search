@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Grad-CAM: Gradient-weighted Class Activation Mapping</title>
+    <title>DBS: Diverse Beam Search</title>
     <meta name="description" content="Grad-CAM: Gradient-weighted Class Activation Mapping">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,‌​100italic,300,300ita‌​lic,400italic,500,50‌​0italic,700,700itali‌​c,900italic,900' rel='stylesheet' type='text/css'>
@@ -39,7 +39,8 @@
                 <li id = "poi" ><a href="http://cloudcv.org/vip">VIP</a></li>
                 <li id="trainaclass"><a href="http://cloudcv.org/trainaclass">Train a new category</a></li>
                 <li id="vqa"><a href="http://cloudcv.org/vqa">VQA</a></li>
-                <li id="vqa"><a href="{% url 'home' %}">Grad-CAM</a></li>
+                <li id="vqa"><a href="http://gradcam.cloudcv.org">Grad-CAM</a></li>
+                <li id="vqa"><a href="{% url 'home' %}">Beam Search</a></li>
             </ul>
         </div>
     </div>
@@ -87,12 +88,24 @@ p{
 #team_heading{
   margin-bottom: 25px;
 }
+.btn-lg{
+  margin-top: 20px;
+}
+#abstract_content{
+  padding-left: 12%;
+  padding-right: 12%;
+}
+#secondTitle{
+  margin-top: 0;
+  margin-bottom: 30px;
+}
 </style>
 
 {% block header_content %}
 
   <div class="container">
-    <h1 align="center">DBS: Diverse Beam Search</h1>
+    <h1 align="center">Diverse Beam Search</h1>
+    <h2 align="center" id="secondTitle">Decoding Diverse Solutions from Neural Sequence Models</h2>
   </div>
 
 {% endblock %}
@@ -102,23 +115,20 @@ p{
 {% endblock %}
 
 {% block abstract%}
-<div class="container">
-    <h2 align="center" class="headings">Abstract</h2>
-    <p>In recent research conducted by our lab (Machine Learning & Perception group), we have developed novel techniques for making CNN more 'transparent' by producing <b>visual explanations</b> i.e visualizations showing what evidence in the image supports a prediction. Research conducted in our lab has shown that models that explain their behavior are considered more trustworthy than typical "black-box" models.</p>
-
-    <img id="network" src="{% static 'images/network.png' %}" width="100%" align="center">
+<div class="container" id="abstract_content">
+    <!-- <h2 align="center" class="headings">Abstract</h2> -->
+    <p>Beam search, the standard work-horse for decoding outputs from neural sequence models like RNNs produces generic and uninteresting sequences. This is inadequate for complex AI tasks like image-captioning that are inherently ambiguous. <br>To overcome this, we propose a diversity-promoting replacement, <em>Diverse Beam Search</em> that produces sequences that are significantly different — with runtime and memory requirements comparable to beam search. </p>
 </div>
 {% endblock %}
 
 {% block demo_links %}
 
 <div class="container" align="center">
-  <h2 align="center" class="headings">Demonstration Links</h2>
     <div class="row">
       <div class="col-md-12">
       <div class="card text-center">
-        <h3 class="card-title" align="center">Diverse Beam Search</h3>
-        <a target="_blank" href="{% url 'captioning' %}" class="btn btn-primary" >Try Diverse Beam Search</a>
+        <!-- <h3 class="card-title" align="center">Diverse Beam Search</h3> -->
+        <a target="_blank" href="{% url 'captioning' %}" class="btn btn-lg btn-primary" >Try Image-captioning Demo</a>
       </div>
     </div>
   </div>
@@ -128,38 +138,38 @@ p{
 
 {% block team %}
   <div class="container team_div" align="center">
-    <h2 align="center" class="headings" id="team_heading">DBS Team</h2>
+    <h2 align="center" class="headings" id="team_heading">Team</h2>
     <div class="row team text-center">
       <div class="col-sm-3" align="center">
-        <img src="{% static 'images/team/ram.jpeg'%}" class="img-responsive img-circle" alt="Cinque Terre">
-        <div class="member-name" align="center"><a  target="_blank" href="https://ramprs.github.io/">Ramprasaath R. Selvaraju</a></div>
-      </div>
-      <div class="col-sm-3" align="center">
-        <img src="{% static 'images/team/abhishek.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
-        <div class="member-name" align="center"><a  target="_blank" href="http://abhishekdas.com/">Abhishek Das</a></div>
-      </div>
-      <div class="col-sm-3" align="center">
-        <img src="{% static 'images/team/rama.jpeg'%}" class="img-responsive img-circle" alt="Cinque Terre">
-        <div class="member-name" align="center"><a  target="_blank" href="http://vrama91.github.io/">Ramakrishna Vedantam</a></div>
+        <img src="{% static 'images/team/ashwin.jpg'%}" class="img-responsive img-circle" alt="ashwin">
+        <div class="member-name" align="center"><a  target="_blank" href="https://computing.ece.vt.edu/~ashwinkv/">Ashwin K Vijayakumar</a></div>
       </div>
       <div class="col-sm-3" align="center">
         <img src="{% static 'images/team/michael.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
         <div class="member-name" align="center"><a  target="_blank" href="">Michael Cogswell</a></div>
       </div>
+      <div class="col-sm-3" align="center">
+        <img src="{% static 'images/team/ram.jpeg'%}" class="img-responsive img-circle" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="https://ramprs.github.io/">Ramprasaath R. Selvaraju</a></div>
+      </div>
+      <div class="col-sm-3" align="center">
+        <img src="{% static 'images/team/qing.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="https://filebox.ece.vt.edu/~sunqing/">Qing Sun</a></div>
+      </div>
     </div>
 
     <div class="row team">
-      <div class="col-sm-3" align="center"> 
-        <img src="{% static 'images/team/deshraj.png'%}" class="img-responsive img-circle center" alt="Cinque Terre">
-        <div class="member-name" align="center"><a  target="_blank" href="https://www.linkedin.com/in/deshraj-yadav-34325975">Deshraj Yadav</a></div>
-      </div>
       <div class="col-sm-3" align="center">
         <img src="{% static 'images/team/stefan.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
         <div class="member-name" align="center"><a  target="_blank" href="https://computing.ece.vt.edu/~steflee/">Stefan Lee</a></div>
       </div>
       <div class="col-sm-3" align="center">
-        <img src="{% static 'images/team/DeviParikh.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
-        <div class="member-name" align="center"><a  target="_blank" href="https://filebox.ece.vt.edu/~parikh/">Devi Parikh</a></div>
+        <img src="{% static 'images/team/deshraj.png'%}" class="img-responsive img-circle center" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="https://www.linkedin.com/in/deshraj-yadav-34325975">Deshraj Yadav</a></div>
+      </div>
+      <div class="col-sm-3" align="center"> 
+        <img src="{% static 'images/team/david.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">
+        <div class="member-name" align="center"><a  target="_blank" href="http://www.cs.indiana.edu/~djcran/">David Candrall</a></div>
       </div>
       <div class="col-sm-3" align="center">
         <img src="{% static 'images/team/dhruv_batra.jpg'%}" class="img-responsive img-circle" alt="Cinque Terre">

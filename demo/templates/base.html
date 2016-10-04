@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Grad-CAM: Gradient-weighted Class Activation Mapping</title>
+    <title>DBS: Diverse Beam Search</title>
     <meta name="description" content="CloudCV: Large Scale Distributed Computer Vision as a Cloud Service">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,‌​100italic,300,300ita‌​lic,400italic,500,50‌​0italic,700,700itali‌​c,900italic,900' rel='stylesheet' type='text/css'>
@@ -40,7 +40,8 @@
                 <li id = "poi" ><a href="http://cloudcv.org/vip">VIP</a></li>
                 <li id="trainaclass"><a href="http://cloudcv.org/trainaclass">Train a new category</a></li>
                 <li id="vqa"><a href="http://cloudcv.org/vqa">VQA</a></li>
-                <li id="vqa"><a href="{% url 'home' %}">Grad-CAM</a></li>
+                <li id="vqa"><a href="http://gradcam.cloudcv.org">Grad-CAM</a></li>
+                <li id="vqa"><a href="{% url 'home' %}">Beam Search</a></li>
             </ul>
         </div>
     </div>
@@ -81,28 +82,13 @@
     width: 0%;
 }
 
-p, h1,h2,h3,h4, font, body{
+p, h1,h2,h3,h4, font, body, label{
   font-weight: 300 !important;
   font-family: 'Roboto', sans-serif !important;
 }
 
 
 </style>
-
-<div id="socket-error" class="modal hide fade" tabindex="-1" data-width="760">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3>Socket Error</h3>
-  </div>
-  <div class="modal-body">
-    <div class="row-fluid">
-      Socket connection cannot be established on port 8000 which is required to communicate with the CloudCV Servers. Please make sure that port 8000 is open and not blocked by firewall on your system.<br>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" data-dismiss="modal" class="btn">Close</button>
-  </div>
-</div>
 
 {% block header_content %}
 
@@ -127,7 +113,7 @@ p, h1,h2,h3,h4, font, body{
 
 <div class="container">
     <div class="page-header">
-        <h2>Try Grad-CAM: Sample Images</h2>
+        <h2>Try Diverse Beam Search: Sample Images</h2>
         <br>
         <div class="row">
             <div class="col-md-8 col-xs-12">
