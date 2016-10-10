@@ -7,7 +7,7 @@ Beam search, the standard work-horse for decoding outputs from neural sequence m
 
 **Diverse Beam Search Demo**: http://dbs.cloudcv.org/captioning
 
-[Imgur](http://i.imgur.com/SDsw7sP.gif)
+![Imgur](http://i.imgur.com/SDsw7sP.gif)
 
 ## Installing / Getting started
 
