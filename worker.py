@@ -2,6 +2,9 @@ from __future__ import absolute_import
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'div_rnn.settings')
 
+import django
+django.setup()
+
 from django.conf import settings
 from demo.utils import log_to_terminal
 
