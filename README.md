@@ -5,6 +5,7 @@
 
 Beam search, the standard work-horse for decoding outputs from neural sequence models like RNNs produces generic and uninteresting sequences. This is inadequate for AI tasks with inherent ambiguity — for example, there can be multiple correct ways of describing the contents of an image. To overcome this we propose a diversity-promoting replacement, Diverse Beam Search that produces sequences that are significantly different — with runtime and memory requirements comparable to beam search.
 
+**Arxiv Paper link**: https://arxiv.org/abs/1610.02424
 **Diverse Beam Search Demo**: http://dbs.cloudcv.org/captioning
 
 ![Imgur](http://i.imgur.com/SDsw7sP.gif)
@@ -13,9 +14,7 @@ Beam search, the standard work-horse for decoding outputs from neural sequence m
 
 We use RabbitMQ to queue the submitted jobs. Also, we use Redis as backend for realtime communication using websockets.
 
-All the instructions for setting Grad-CAM from scratch can be found  [here](https://github.com/Cloud-CV/diverse-beam-search/blob/master/INSTALLATION.md)
-
-Note: For best results, its recommended to run the Grad-CAM demo on GPU enabled machines.
+All the instructions for setting diverse beam search from scratch can be found  [here](https://github.com/Cloud-CV/diverse-beam-search/blob/master/INSTALLATION.md)
 
 ## Interested in Contributing?
 
