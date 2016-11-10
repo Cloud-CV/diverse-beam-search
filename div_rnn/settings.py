@@ -132,6 +132,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
             "hosts": [("localhost", 6379)],
+            "prefix": u"dbs:",
         },
         "ROUTING": "demo.routing.channel_routing",
     },
