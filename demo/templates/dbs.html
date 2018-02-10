@@ -6,7 +6,7 @@
 <a href="//github.com/Cloud-CV/diverse-beam-search" target="_blank"><img style="position: fixed; top: 0; right: 0; border: 0; z-index:2000;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 
 <div class="container">
-    <div class="page-header">
+    <div class="page-header page-header-top">
         <h1 align="center">Diverse Beam Search</h1>
         <br><h4>Diverse Beam Search, our proposed method to decode significantly different sequences from neural sequence models is used to generate captions for images. 
 The captioning model is trained on COCO using the <a href="https://github.com/karpathy/neuraltalk2">neuraltalk2</a> repository. Code to setup this demo is available <a href="https://github.com/Cloud-CV/diverse-beam-search">here</a>.</h4>
@@ -24,8 +24,6 @@ The captioning model is trained on COCO using the <a href="https://github.com/ka
 <style type="text/css">
 
   .caption {
-    /*display: block;*/
-    /*text-align: center;*/
     font-size: 18px !important;
     font-weight: bold;
 }
@@ -34,21 +32,15 @@ The captioning model is trained on COCO using the <a href="https://github.com/ka
     font-weight: bold;
 }
 
-.under
-{
-position:absolute;
-/*left:0px;
-top:0px;*/
-z-index:-1;
+.under {
+  position:absolute;
+  z-index:-1;
 }
 
-.over
-{
-position:absolute;
-/*left:40px;*/
-/*top:10px;*/
-z-index:0;
-mix-blend-mode: multiply;
+.over {
+  position:absolute;
+  z-index:0;
+  mix-blend-mode: multiply;
 }
 
 #gradCamCaption{
@@ -107,7 +99,6 @@ mix-blend-mode: multiply;
       var myDropzone = this;
       this.hiddenFileInput.removeAttribute('multiple');
       myDropzone.on('success', function(file, data){
-        console.log(data);
         
         $("#inputImageAfterUpload").attr('src', data['file_path']);
         $("#image_folder").val(data['image_folder']);
@@ -132,18 +123,14 @@ $(document).ready(function(){
   var socket = new ReconnectingWebSocket(ws_scheme + '://' + window.location.host + "/chat" + window.location.pathname);
 
   socket.onopen = function() {
-      console.log("User connected to the socket with socketid "+ "{{socketid }}");
       socket.send("{{ socketid }}");
   }
 
   socket.onmessage = function(response) {
-    console.log("Getting response from the worker.....");
-    console.log(JSON.parse(response.data));
 
     response = JSON.parse(response.data);
 
     if ("info" in response){
-      console.log("Info is there as the key");
     }
 
     if ("terminal" in response){
@@ -200,16 +187,13 @@ function submitImageForCaptioning () {
 
   var l = $("#inputImageAfterUpload")[0].src;
   var image_folder = $("#image_folder").val();
-  console.log("IMAGE FOLDER IS " + image_folder);
   var demoType = $("#demoType").val();
-  console.log(image_folder);
   $.ajax({
     type    : 'POST', // define the type of HTTP verb we want to use (POST for our form)
     url     : '{% url 'captioning' %}', // the url where we want to POST
     data    : { 'demoType': demoType,'image_folder': image_folder, 'csrfmiddlewaretoken': "{{ csrf_token }}", 'B': B, 'M': M, 'lamda': lamda, 'socketid': "{{ socketid }}"} // our data object
   })// using the done promise callback
   .done(function(response) {
-    console.log("Ajax call completed successfully");
   });
 }
 </script>
@@ -221,29 +205,26 @@ function submitImageForCaptioning () {
   <div class="col-md-5" style="padding-bottom: 30px; clear: both;">
     <img class="img-responsive" src="" style="height: 300px;" id="inputImageAfterUpload">
   </div>
-<!--   <div class="col-md-7" style="padding-bottom: 30px;">
-    </div>
- -->      
-      <div class="col-md-2">
-        <label for="rg-from">B (#beams)</label>
-        <input id="B" type="number" min="1" class="form-control" name="B" placeholder="(optional)"><br>
-      </div>
-      <div class="col-md-2">
-        <label for="rg-from">G (#groups)</label>
-        <select class="form-control" min="1" id="M" name="M" placeholder="Enter G...(optional)">
-        </select>
-      </div>
-      <div class="col-md-2">
-        <label for="rg-from">&#955; (#diversity strength)</label>
-        <input id="lamda" type="number" class="form-control" name="lamda" placeholder="Enter &#955;...(optional)" ><br>
-      </div>
-    <!-- <input id="prefix" class="form-control" name="prefix" placeholder="Enter prefix text...(Optional)"><br> -->
-    <input id="image_folder" name="image_folder" type="hidden">
-    <input id="demoType" name="demoType" type="hidden">
-    <div class="col-md-7">
-      <p id="input_note">Note: More diverse lists can be obtained by increasing the number of groups (G) and the diversity strength &#955;.</p>
-      <input type="button" value="Submit" onclick="submitImageForCaptioning()" class="btn btn-primary">
-    </div>
+  <div class="col-md-2">
+    <label for="rg-from">B (#beams)</label>
+    <input id="B" type="number" min="1" class="form-control" name="B" value="6" placeholder="(optional)"><br>
+  </div>
+  <div class="col-md-2">
+    <label for="rg-from">G (#groups)</label>
+    <select class="form-control" min="1" id="M" name="M" placeholder="Enter G...(optional)">
+    <option selected="selected">3</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label for="rg-from">&#955; (#diversity strength)</label>
+    <input id="lamda" type="number" class="form-control" name="lamda" placeholder="Enter &#955;...(optional)" value="0.5" ><br>
+  </div>
+  <input id="image_folder" name="image_folder" type="hidden">
+  <input id="demoType" name="demoType" type="hidden">
+  <div class="col-md-7">
+    <p id="input_note">Note: More diverse lists can be obtained by increasing the number of groups (G) and the diversity strength &#955;.</p>
+    <input type="button" value="Submit" onclick="submitImageForCaptioning()" class="btn btn-primary">
+  </div>
 </div>
 </div>
 <div id="ResultImage" class="container" style="padding-bottom:50px;">

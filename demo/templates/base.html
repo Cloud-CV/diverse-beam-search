@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>DBS: Diverse Beam Search</title>
-    <meta name="description" content="CloudCV: Large Scale Distributed Computer Vision as a Cloud Service">
+    <meta name="description" content="Diverse Beam Search Demo: Decoding Diverse Solutions from Neural Sequence Models">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='http://fonts.googleapis.com/css?family=Roboto:400,100,‌​100italic,300,300ita‌​lic,400italic,500,50‌​0italic,700,700itali‌​c,900italic,900' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
@@ -13,10 +13,10 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/vis_style.css' %}">
     <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/milligram.min.css' %}"> -->
     <script src="/static/js/dropzone.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="http://cloudcv.org/static/js/vendor/jquery.ui.widget.js"></script>
     <script src="http://cloudcv.org/node/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/min/dropzone.min.css">
 </head>
 <body>
@@ -33,15 +33,19 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li id="image-stitching"><a  href="http://cloudcv.org/image-stitch">Image Stitching</a></li>
-                 <li id = "object-detection" ><a href="http://objdetect.cloudcv.org">Object Detection</a></li>
-                <li id = "decaf-server"><a  href="http://cloudcv.org/decaf-server">Decaf-Server</a></li>
-                <li id = "classification" ><a href="http://cloudcv.org/classify">Classification</a></li>
-                <li id = "poi" ><a href="http://cloudcv.org/vip">VIP</a></li>
-                <li id="trainaclass"><a href="http://cloudcv.org/trainaclass">Train a new category</a></li>
-                <li id="vqa"><a href="http://cloudcv.org/vqa">VQA</a></li>
-                <li id="vqa"><a href="http://gradcam.cloudcv.org">Grad-CAM</a></li>
-                <li id="vqa"><a href="{% url 'home' %}">Beam Search</a></li>
+              <li><a target="_blank" href="https://evalai.cloudcv.org">EvalAI</a></li>
+              <li><a target="_blank" href="http://origami.cloudcv.org">Origami</a></li>
+              <li><a target="_blank" href="http://fabrik.cloudcv.org">Fabrik</a></li>
+              <li><a href="//gsoc.cloudcv.org" target="_blank">GSoC</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Demos <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="http://visualchatbot.cloudcv.org" target="_blank">Visual Chatbot</a></li>
+                  <li><a href="//vqa.cloudcv.org" target="_blank">VQA</a></li>
+                  <li><a href="//gradcam.cloudcv.org" target="_blank">Grad-CAM</a></li>
+                  <li><a href="//dbs.cloudcv.org" target="_blank">DBS</a></li>
+                </ul>
+              </li>
             </ul>
         </div>
     </div>
@@ -87,7 +91,9 @@ p, h1,h2,h3,h4, font, body, label{
   font-family: 'Roboto', sans-serif !important;
 }
 
-
+.page-header-top {
+  margin-top: 60px !important;
+}
 </style>
 
 {% block header_content %}
