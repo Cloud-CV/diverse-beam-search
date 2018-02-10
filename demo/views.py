@@ -90,7 +90,7 @@ def get_demo_images(demo_images_path):
 
 
 def select_random_six_demo_images(images_list):
-    prefixes = ('classify', 'vqa', 'captioning')
+    prefixes = ('classify', 'vqa', 'caption')
     demo_images = [random.choice(images_list) for i in range(6)]
     for i in demo_images[:]:
         if i.startswith(prefixes):
