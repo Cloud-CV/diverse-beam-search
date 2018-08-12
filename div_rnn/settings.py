@@ -137,3 +137,5 @@ CHANNEL_LAYERS = {
         "ROUTING": "demo.routing.channel_routing",
     },
 }
+
+X_FRAME_OPTIONS = 'https://cloudcv.org/projects/dbs'
